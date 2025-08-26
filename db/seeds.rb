@@ -9,6 +9,7 @@ puts "Creating user…"
 user = User.create!(
   name: "Test",
   email: "test@test.com",
+  password: "123123",
   starting_balance: 350_000
 )
 
@@ -17,8 +18,7 @@ CATEGORIES = ["Food", "Health", "Commute", "Utilities", "Entertainment", "Others
 puts "Creating categories…"
 categories = CATEGORIES.map do |title|
   user.categories.create!(
-    title: title,
-    limit: rand(10_000..80_000) # tweak or remove if you like
+    title: title
   )
 end
 
@@ -42,7 +42,7 @@ DESCRIPTIONS = {
     user: user,
     category: category,
     description: DESCRIPTIONS[title].sample,
-    amount: rand(300..12_000),       
+    amount: rand(300..12_000),
     date: Faker::Date.between(from: 90.days.ago, to: Date.today)
   )
 end
