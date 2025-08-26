@@ -1,0 +1,8 @@
+<h2>Transactions Index page</h2>
+
+e<% @transactions.each do |transaction| %>
+  <%= transaction.description %>
+  <%= transaction.amount %>
+  <%= transaction.category.title %>
+  <%= transaction.date %>
+<% end %>
