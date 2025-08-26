@@ -1,9 +1,50 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+require "faker"
+
+puts "Cleaning up…"
+Transaction.delete_all
+Category.delete_all
+User.delete_all
+
+puts "Creating user…"
+user = User.create!(
+  name: "Test",
+  email: "test@test.com",
+  starting_balance: 350_000
+)
+
+CATEGORIES = ["Food", "Health", "Commute", "Utilities", "Entertainment", "Others"]
+
+puts "Creating categories…"
+categories = CATEGORIES.map do |title|
+  user.categories.create!(
+    title: title,
+    limit: rand(10_000..80_000) # tweak or remove if you like
+  )
+end
+
+puts "Creating transactions…"
+# ~50 transactions, spread across categories
+
+DESCRIPTIONS = {
+  "Food"          => ["Ramen shop", "Supermarket", "Bento", "Cafe latte", "Sushi train", "Convenience store"],
+  "Health"        => ["Pharmacy", "Clinic visit", "Vitamins", "Gym day pass", "Massage"],
+  "Commute"       => ["Train fare", "Bus IC top-up", "Taxi", "Bike repair", "Highway toll"],
+  "Utilities"     => ["Electric bill", "Water bill", "Gas bill", "Mobile plan", "Home internet"],
+  "Entertainment" => ["Cinema", "Arcade", "Concert ticket", "Streaming sub", "Karaoke"],
+  "Others"        => ["Stationery", "Gift", "Home goods", "Random purchase", "Household"]
+}
+
+50.times do
+  category = categories.sample
+  title = category.title
+
+  Transaction.create!(
+    user: user,
+    category: category,
+    description: DESCRIPTIONS[title].sample,
+    amount: rand(300..12_000),       
+    date: Faker::Date.between(from: 90.days.ago, to: Date.today)
+  )
+end
+
+puts "Done!"
