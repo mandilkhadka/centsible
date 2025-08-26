@@ -1,4 +1,50 @@
-categories = ["foods", "enertainment"]
-categories.each do |category|
-  Category.create(title: category, limit: 1000, user: User.first)
+require "faker"
+
+puts "Cleaning up…"
+Transaction.delete_all
+Category.delete_all
+User.delete_all
+
+puts "Creating user…"
+user = User.create!(
+  name: "Test",
+  email: "test@test.com",
+  password: "123123",
+  starting_balance: 350_000
+)
+
+CATEGORIES = ["Food", "Health", "Commute", "Utilities", "Entertainment", "Others"]
+
+puts "Creating categories…"
+categories = CATEGORIES.map do |title|
+  user.categories.create!(
+    title: title
+  )
 end
+
+puts "Creating transactions…"
+# ~50 transactions, spread across categories
+
+DESCRIPTIONS = {
+  "Food"          => ["Ramen shop", "Supermarket", "Bento", "Cafe latte", "Sushi train", "Convenience store"],
+  "Health"        => ["Pharmacy", "Clinic visit", "Vitamins", "Gym day pass", "Massage"],
+  "Commute"       => ["Train fare", "Bus IC top-up", "Taxi", "Bike repair", "Highway toll"],
+  "Utilities"     => ["Electric bill", "Water bill", "Gas bill", "Mobile plan", "Home internet"],
+  "Entertainment" => ["Cinema", "Arcade", "Concert ticket", "Streaming sub", "Karaoke"],
+  "Others"        => ["Stationery", "Gift", "Home goods", "Random purchase", "Household"]
+}
+
+50.times do
+  category = categories.sample
+  title = category.title
+
+  Transaction.create!(
+    user: user,
+    category: category,
+    description: DESCRIPTIONS[title].sample,
+    amount: rand(300..12_000),
+    date: Faker::Date.between(from: 90.days.ago, to: Date.today)
+  )
+end
+
+puts "Done!"
