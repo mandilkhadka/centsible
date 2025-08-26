@@ -1,28 +1,12 @@
 class TransactionsController < ApplicationController
-  def expenses_until_same_day_last_month
-    start_date = Date.current.last_month.beginning_of_month
-    end_date = [
-      Date.current.last_month.end_of_month,
-      Date.current.last_month.change(day: Date.current.day)
-    ].min
-
-    where("amount > 0").where(created_at: start_date..end_date).sum(:amount)
+  def compare_last_month
+    this_month = Transaction.total_expenses_from_start_of_month
+    last_month = Transaction.total_expenses_until_same_day_last_month
+    spending_difference = (this_month - last_month) / last_month.to_f
+    spending_difference.round(2)
   end
 
-  def expenses_until_same_day_this_month
-    start_date = Date.current.beginning_of_month
-    end_date = [
-      Date.current.end_of_month,
-      Date.current.change(day: Date.current.day)
-    ].min
-
-    where("amount > 0").where(created_at: start_date..end_date).sum(:amount)
-  end
-
-  def expenses_past_30_days
-    start_date = Date.current - 30
-    end_date = Date.current
-
-    where("amount > 0").where(created_at: start_date..end_date).sum(:amount)
+  def daily_average
+    Transaction.total_expenses_past_30_days / 30
   end
 end
