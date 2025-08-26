@@ -10,3 +10,10 @@
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+
+.w-90-max-800 {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
