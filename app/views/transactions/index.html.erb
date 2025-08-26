@@ -1,8 +1,28 @@
-<h2>Transactions Index page</h2>
+<%# HEADER PARTIAL %>
 
-e<% @transactions.each do |transaction| %>
-  <%= transaction.description %>
-  <%= transaction.amount %>
-  <%= transaction.category.title %>
-  <%= transaction.date %>
-<% end %>
+<%# | %>
+
+<%# | %>
+
+<%# HEADER PARTIAL %>
+
+
+<div id="transaction_index">
+  <h2>Transactions Index page</h2>
+
+  e<% @transactions.each do |transaction| %>
+    <%= transaction.description %>
+    <%= transaction.amount %>
+    <%= transaction.category.title %>
+    <%= transaction.date %>
+  <% end %>
+</div>
+
+
+<%# NAV BAR %>
+
+<%# | %>
+
+<%# | %>
+
+<%# NAV BAR %>
