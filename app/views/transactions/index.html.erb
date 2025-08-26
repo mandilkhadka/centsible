@@ -1,6 +1,7 @@
 <h2>Transactions Index page</h2>
     <%# If we wan to sort it out in html file we need this line in the controller
     # @transactions = current_user.transactions.order(created_at: :desc) %>
+
 <div class="balance" style="display:flex; align-items:center; gap:.5rem; margin:2;">
   <h4 style="margin:0;">Available Balance:</h4>
   <p style="margin:0;"><%= "¥#{@available_balance}" %></p>
