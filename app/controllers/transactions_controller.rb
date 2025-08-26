@@ -6,7 +6,7 @@ class TransactionsController < ApplicationController
     # @transactions = current_user.transactions.order(created_at: :desc)
     # @income = 
     @total_spent = current_user.transactions.sum(:amount)
-    @available_balance = current_user.starting_balance + @income - @total_spent
+    @available_balance = current_user.starting_balance - @total_spent
     # @income = current_user.starting_balance
   end
 
