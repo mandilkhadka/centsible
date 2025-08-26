@@ -1,14 +1,8 @@
 class UsersController < ApplicationController
-  # def edit
-  #   @user = current_user
-  # end
 
-  # def update
-  #   @user = current_user
-  #   if @user.update
-
-  #   end
-
-
-  # end
+  def dashboard
+    @transaction = Transaction.new
+    @transactions = current_user.transactions.order(created_at: :desc)
+    @categories  = current_user.categories
+  end
 end

@@ -10,22 +10,22 @@ class TransactionsController < ApplicationController
     # @income = current_user.starting_balance
   end
 
-  def new
-    @transactions = Transaction.new
-  end
+  # def new
+  #   @transactions = Transaction.new
+  # end
 
   def create
     # if transaction_type == "expense"
     @transaction = Transaction.new(transactions_params)
     @transaction.user = current_user
-      if @transaction.save
-        @transaction = params[:transaction]
-        # @spent_amount = @transaction[:amount].to_i
-        # @subtracted_value = current_user.starting_balance - @spent_amount
-        redirect_to transactions_path
-      else
-        render "new", status: :unprocessable_entity
-      end
+
+    if @transaction.save
+      redirect_to transactions_path
+    else
+      @transactions = current_user.transactions.order(created_at: :desc)
+      @categories   = current_user.categories
+      render "users/dashboard", status: :unprocessable_entity
+    end
   end
 
   private
