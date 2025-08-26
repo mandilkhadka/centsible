@@ -1,7 +1,7 @@
 <%= simple_form_for(@transactions) do |f| %>
   <%= f.input :description, placeholder: "Items", required: true, label: false, class: "my-4"%>
-  <%= f.number_field :amount, placeholder: "Price", required: true, label: false, class: "my-4 w-100" %>
+  <%= f.number_field :amount, step: 1000, placeholder: "Price", required: true, label: false, class: "my-4 w-100" %>
   <%= f.association :category, placeholder: "Category", prompt: "Select a Category", required: true, label: false, class: "my-4" %>
   <%= f.input :date, as: :date, required: true, label: false, class: "my-4" %>
-  <%= f.button :submit, class: "btn btn-primary"%>
+  <%= f.button :submit, "Add Expense", class: "btn btn-primary"%>
 <% end %>
