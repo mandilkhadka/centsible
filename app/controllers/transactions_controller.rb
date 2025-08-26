@@ -1,9 +1,9 @@
 class TransactionsController < ApplicationController
-  def compare_last_month
+  def percentage_compared_to_last_month
     this_month = Transaction.total_expenses_from_start_of_month
     last_month = Transaction.total_expenses_until_same_day_last_month
     spending_difference = (this_month - last_month) / last_month.to_f
-    spending_difference.round(2)
+    "#{spending_difference.round(2)}%"
   end
 
   def daily_average
