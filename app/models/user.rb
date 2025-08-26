@@ -8,6 +8,6 @@ class User < ApplicationRecord
   has_many :messages
   has_many :transactions
 
-    validates :name, presence: true
-    validates :starting_balance, numericality: { only_integer: true }
+    # validates :name, presence: true
+    # validates :starting_balance, numericality: { only_integer: true }
 end
