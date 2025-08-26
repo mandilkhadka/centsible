@@ -1,12 +1,31 @@
 .navbar-lewagon {
   justify-content: space-between;
-  background: white;
-}
+  background: $background-beige;
+  }
 
 .navbar-lewagon .navbar-collapse {
   flex-grow: 0;
 }
 
 .navbar-lewagon .navbar-brand img {
-  width: 40px;
+  width: 60px;
+}
+
+.title-bar {
+  width :60px;
+}
+
+.centsible {
+  font-weight: 800;
+  color: #014B51;
+}
+
+.centsible-logo {
+  width: 60px;
+  height: 60px;
+}
+
+.navbar-brand {
+  margin: 0;
+
 }
