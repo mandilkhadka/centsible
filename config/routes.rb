@@ -16,5 +16,6 @@ Rails.application.routes.draw do
   resources :transactions, only: [:new, :create, :index]
   resources :users, only: [:show, :edit, :update]
   resources :messages, only: [:index, :new, :create]
+  resources :categories, only: [:index, :new, :create]
 
 end
