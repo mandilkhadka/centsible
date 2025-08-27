@@ -20,6 +20,7 @@ class TransactionsController < ApplicationController
     else
       @transactions = current_user.transactions.order(created_at: :desc)
       @categories   = current_user.categories
+      # Have to close it manually; to automatically remove the alert; we have to use stimulus JS
       flash[:alert] = 'Failed to add. Please fill all the input fields and put in the positive value.'
       render "users/dashboard", status: :unprocessable_entity
     end
