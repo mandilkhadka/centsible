@@ -1,16 +1,11 @@
 <%= simple_form_for transaction do |f| %>
-
   <%= f.input :transaction_type, as: :hidden, input_html: { value: expense ? "expense" : "income" } %>
-
   <%= f.input :description, placeholder: "Items", required: true, label: false, input_html: { class: "my-4" } %>
-
-  <%= f.input :amount, as: :integer, step: 1_000,  placeholder: "Price", required: true, label: false, input_html: { class: "my-4 w-100, min: 1" } %>
-
+  <%= f.input :amount, as: :integer, step: 1_000,  placeholder: "Price", required: true, label: false, input_html: { min: "0" } %>
   <% if expense  %>
-    <%= f.association :category, collection: categories, prompt: "Select a Category", required: true, label: false, input_html: { class: "my-4" } %>
-    <% else %>
-      <%#= hidden_field_tag :category, "Income" %>
-    <% end %>
+    <%= f.association :category, collection: Category.where.not(title: "Income"), prompt: "Select a Category", required: true, label: false, input_html: { class: "my-4" } %>
+  <% else %>
+  <% end %>
   <%= f.input :date, as: :date, required: true, label: false, input_html: { class: "my-4" } %>
   <%= f.button :submit, class: "btn btn-primary" %>
 <% end %>
