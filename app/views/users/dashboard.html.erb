@@ -46,5 +46,10 @@
 <%# CREATE TRANSACTION FORM %>
 
 <div id="create_transaction_form" class="w-90-max-800 rounded-5 shadow p-3 mb-5">
-  <%= render "partials/form", transaction: Transaction.new, categories: current_user.categories %>
+  <%# if expense %>
+  <%= render "partials/form", locals: {transaction: Transaction.new, categories: current_user.categories}%>
+  <%# else %>
+  <%#= render "partials/incomeform", transaction: Transaction.new, categories: current_user.categories, expense: false%>
+<%# end %>
+
 </div>
