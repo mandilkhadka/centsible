@@ -4,8 +4,10 @@
 
 
 <%# STATS %>
+
 <div id="dashboard_stats_container" class="d-flex flex-row box-size p-0 gap-3 mb-3">
   <div id="last_month_comparison_stat" class="flex-fill rounded-5 shadow p-3 stats_background">
+
     <div class="fw-bold">Compared to last month</div>
     <div class="fs-3 fw-bold text-primary">
       <%= "#{Transaction.percentage_compared_to_last_month.round(2)}%" %>
@@ -26,13 +28,17 @@
 
 
 <%# AI CHAT FORM %>
+
 <div id="ai_chat_input" class="box-size rounded-5 shadow p-3 mb-3">
   <p>chat with AI here</p>
+
 </div>
 
 
 <%# CREATE TRANSACTION FORM %>
+
 <div id="create_transaction_form" class="box-size rounded-5 shadow p-3 mb-3">
+
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <span class="nav-link tab-underlined active" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings-tab-pane" role="tab" aria-controls="bookings-tab-pane" aria-selected="true">Expense</span>
