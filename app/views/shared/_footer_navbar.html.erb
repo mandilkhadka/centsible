@@ -1,27 +1,27 @@
 <div class="navbar navbar-expand-sm navbar-light footer">
   <div class="footer-content d-flex w-100 justify-content-between">
     <div class="nav-item">
-      <%= link_to "#", class: "nav-link d-flex flex-column align-items-center" do %>
+      <%= link_to root_path, class: "nav-link d-flex flex-column align-items-center" do %>
         <%= image_tag "dashboard_icon.png", alt: "Dashboard", class: "icon" %>
-        <span class="icon-text">Dashboard</span>
+        <h5 class="icon-text">Dashboard</h5>
       <% end %>
     </div>
     <div class="nav-item">
-      <%= link_to "#", class: "nav-link d-flex flex-column align-items-center" do %>
+      <%= link_to transactions_path, class: "nav-link d-flex flex-column align-items-center" do %>
         <%= image_tag "expenses_icon.png", alt: "Expenses", class: "icon" %>
-        <span class="icon-text">Expenses</span>
+        <h5 class="icon-text">Transactions</h5>
       <% end %>
     </div>
     <div class="nav-item">
       <%= link_to "#", class: "nav-link d-flex flex-column align-items-center" do %>
         <%= image_tag "chat_icon.png", alt: "Chat", class: "icon" %>
-        <span class="icon-text">Chat with AI</span>
+        <h5 class="icon-text">Chat with AI</h5>
       <% end %>
     </div>
     <div class="nav-item">
       <%= link_to "#", class: "nav-link d-flex flex-column align-items-center" do %>
         <%= image_tag "safe_icon.png", alt: "Safe", class: "icon" %>
-        <span class="icon-text">Savings</span>
+        <h5 class="icon-text">Savings</h5>
       <% end %>
     </div>
   </div>
