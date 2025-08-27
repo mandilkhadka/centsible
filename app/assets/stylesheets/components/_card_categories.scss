@@ -1,0 +1,27 @@
+.card-body {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+  font-family: sans-serif;
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.card-title {
+  margin: 0 0 8px;
+  // font-size: 1.25rem;
+}
+
+.card-text {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+ul {
+  list-style-type: none;
+}

@@ -1,6 +1,8 @@
-<%= simple_form_for(@transactions) do |f| %>
+<%#= simple_form_for(transaction) do |f| %>
 
-  <%= f.number_field :amount, step: 10_000, placeholder: "Income", required: true, label: false, class: "my-4 w-100" %>
+  <%#= f.input :description, placeholder: "Items", required: true, label: false, input_html: { class: "my-4" } %>
 
-  <%= f.button :submit, "Add Income", class: "btn btn-primary"%>
-<% end %>
+  <%#= f.number_field :amount, step: 10_000, placeholder: "Income", required: true, label: false, class: "my-4 w-100" %>
+
+  <%#= f.button :submit, "Add Income", class: "btn btn-primary"%>
+<%# end %>

@@ -1,22 +1,38 @@
 <%# HEADER PARTIAL %>
-
 <%# | %>
-
 <%# | %>
-
 <%# HEADER PARTIAL %>
-
-
-<div id="transaction_index">
-  <h2>Categories Index page</h2>
-
+<div class="container">
+  <div class="card-body">
+    <div id="transaction_index">
+      <h3 class="card-title">Categories</h3>
+      <% @transactions.each do |category, transactions| %>
+        <div class="d-flex justify-content-between">
+          <h4><%= category.title %>  ¥ <%= transactions.pluck(:amount).sum %></h4>
+        </div>
+        <ul>
+          <% transactions.each do |transaction| %>
+            <li> <%= transaction.description %> - ¥<%= transaction.amount %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+  <div class="card-body mt-3 mb-3">
+    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Add a New Category</button>
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Offcanvas bottom</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body small">
+        <%= simple_form_for @category do |f| %>
+          <%= f.input :title %>
+          <%= f.submit %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <%# NAV BAR %>
 </div>
-
-
-<%# NAV BAR %>
-
-<%# | %>
-
-<%# | %>
-
 <%# NAV BAR %>
