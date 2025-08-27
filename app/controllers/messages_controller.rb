@@ -19,7 +19,7 @@ class MessagesController < ApplicationController
 
   def build_conversation_history
     @ruby_llm_chat = RubyLLM.chat(model: 'gemini-2.0-flash')
-    Message.all.each do |message|
+    current_user.messages.all.each do |message|
       @ruby_llm_chat.add_message(content: message.content, role: message.role)
     end
     @ruby_llm_chat = RubyLLM.chat(model: 'gemini-2.0-flash')
