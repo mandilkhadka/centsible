@@ -1,8 +1,8 @@
 class MessagesController < ApplicationController
   require 'redcarpet'
-  
+
   def index
-    @messages = Message.all
+    @messages = Message.all.order(created_at: :asc)
     @user_message = Message.new
   end
 
