@@ -1,14 +1,13 @@
-<%# Header will be a partial !! %>
-<div id="header">
-</div>
 <%# BALANCE %>
 <div id="balance_container" class="box-size">
 </div>
+
+
 <%# STATS %>
-<div id="dashboard_stats_container"
-     class="d-flex flex-row box-size p-0 gap-3">
-  <div id="last_month_comparison_stat"
-       class="flex-fill rounded-5 shadow p-3 stats_background">
+
+<div id="dashboard_stats_container" class="d-flex flex-row box-size p-0 gap-3 mb-3">
+  <div id="last_month_comparison_stat" class="flex-fill rounded-5 shadow p-3 stats_background">
+
     <div class="fw-bold">Compared to last month</div>
     <div class="fs-3 fw-bold text-primary">
       <%= "#{Transaction.percentage_compared_to_last_month.round(2)}%" %>
@@ -21,17 +20,25 @@
       <% end %>
     </div>
   </div>
-  <div id="daily_average_stat"
-       class="flex-fill rounded-5 shadow p-3 stats_background">
+  <div id="daily_average_stat" class="flex-fill rounded-5 shadow p-3 stats_background">
     <div class="fw-bold">Daily average</div>
     <div class="fs-3 fw-bold">¥<%= Transaction.daily_average %></div>
   </div>
 </div>
+
+
 <%# AI CHAT FORM %>
-<div id="ai_chat_input" class="box-size">
+
+<div id="ai_chat_input" class="box-size rounded-5 shadow p-3 mb-3">
+  <p>chat with AI here</p>
+
 </div>
+
+
 <%# CREATE TRANSACTION FORM %>
-<div id="create_transaction_form" class="box-size rounded-5 shadow p-3 mb-5">
+
+<div id="create_transaction_form" class="box-size rounded-5 shadow p-3 mb-3">
+
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <span class="nav-link tab-underlined active" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings-tab-pane" role="tab" aria-controls="bookings-tab-pane" aria-selected="true">Expense</span>
@@ -47,6 +54,5 @@
     <div class="tab-pane fade py-3" id="requests-tab-pane" role="tabpanel" aria-labelledby="requests-tab" tabindex="0">
       <%= render "partials/form", transaction: Transaction.new, categories: current_user.categories, expense: false%>
     </div>
-    <%# <%= link_to "All Transactions", transactions_path %>
   </div>
 </div>
