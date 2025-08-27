@@ -1,3 +1,3 @@
 RubyLLM.configure do |config|
-  config.gemini_api_key = ENV["AIzaSyCmudlKFKN_3Ns5ZhGv8VWowTKtpEL8IQw"]
+  config.gemini_api_key = ENV["GEMINI_API_KEY"]
 end

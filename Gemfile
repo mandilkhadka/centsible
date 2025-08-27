@@ -76,3 +76,4 @@ end
 
 gem "ostruct"
 gem "faker"
+gem "ruby_llm"
