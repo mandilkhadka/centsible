@@ -2,23 +2,24 @@ class TransactionsController < ApplicationController
   def index
     @transactions = Transaction.all
 
-    # If we wan to sort it out in html file we need this line
-    # @transactions = current_user.transactions.order(created_at: :desc)
-    # @income =
+    # Sorting it out in html file
+    @transactions = Transaction.order(date: :desc)
+
+
     @total_spent = current_user.transactions.sum(:amount)
-    @available_balance = current_user.starting_balance - @total_spent 
+    @available_balance = current_user.starting_balance - @total_spent
     # @income = current_user.starting_balance
   end
-
-  # def new
-  #   @transactions = Transaction.new
-  # end
 
   def create
     # if transaction_type == "expense"
     @transaction = Transaction.new(transactions_params)
     @transaction.user = current_user
 
+    if @transaction.transaction_type == "income"
+      income_category = Category.find_or_create_by(title: "Income", user: current_user)
+      @transaction.category = income_category
+    end
     if @transaction.save
       redirect_to transactions_path
     else
@@ -31,6 +32,6 @@ class TransactionsController < ApplicationController
   private
 
   def transactions_params
-    params.require(:transaction).permit(:description, :amount, :category_id, :date)
+    params.require(:transaction).permit(:description, :amount, :category_id, :date, :transaction_type)
   end
 end
