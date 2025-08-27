@@ -4,9 +4,9 @@ class TransactionsController < ApplicationController
 
     # If we wan to sort it out in html file we need this line
     # @transactions = current_user.transactions.order(created_at: :desc)
-    # @income = 
+    # @income =
     @total_spent = current_user.transactions.sum(:amount)
-    @available_balance = current_user.starting_balance - @total_spent
+    @available_balance = current_user.starting_balance - @total_spent 
     # @income = current_user.starting_balance
   end
 
