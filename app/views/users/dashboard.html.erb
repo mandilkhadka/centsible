@@ -1,19 +1,12 @@
 <%# Header will be a partial !! %>
 <div id="header">
 </div>
-
-
 <%# BALANCE %>
-
 <div id="balance_container" class="w-90-max-800">
 </div>
-
-
 <%# STATS %>
-
 <div id="dashboard_stats_container"
      class="d-flex flex-row w-90-max-800 p-0 gap-3">
-
   <div id="last_month_comparison_stat"
        class="flex-fill rounded-5 shadow p-3 stats_background">
     <div class="fw-bold">Compared to last month</div>
@@ -28,23 +21,32 @@
       <% end %>
     </div>
   </div>
-
   <div id="daily_average_stat"
        class="flex-fill rounded-5 shadow p-3 stats_background">
     <div class="fw-bold">Daily average</div>
     <div class="fs-3 fw-bold">¥<%= Transaction.daily_average %></div>
   </div>
 </div>
-
-
 <%# AI CHAT FORM %>
-
 <div id="ai_chat_input" class="w-90-max-800">
 </div>
-
-
 <%# CREATE TRANSACTION FORM %>
-
 <div id="create_transaction_form" class="w-90-max-800 rounded-5 shadow p-3 mb-5">
-  <%= render "partials/form", transaction: Transaction.new, categories: current_user.categories %>
+  <ul class="nav tabs-underlined" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <span class="nav-link tab-underlined active" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings-tab-pane" role="tab" aria-controls="bookings-tab-pane" aria-selected="true">Expense</span>
+    </li>
+    <li class="nav-item" role="presentation">
+      <span class="nav-link tab-underlined" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests-tab-pane" role="tab" aria-controls="requests-tab-pane" aria-selected="false">Income</span>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade py-3 show active" id="bookings-tab-pane" role="tabpanel" aria-labelledby="bookings-tab" tabindex="0">
+      <%= render "partials/form", transaction: Transaction.new, categories: current_user.categories, expense: true%>
+    </div>
+    <div class="tab-pane fade py-3" id="requests-tab-pane" role="tabpanel" aria-labelledby="requests-tab" tabindex="0">
+      <%= render "partials/form", transaction: Transaction.new, categories: current_user.categories, expense: false%>
+    </div>
+    <%# <%= link_to "All Transactions", transactions_path %>
+  </div>
 </div>
