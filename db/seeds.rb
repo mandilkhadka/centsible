@@ -13,7 +13,7 @@ user = User.create!(
   starting_balance: 350_000
 )
 
-CATEGORIES = ["Food", "Health", "Commute", "Utilities", "Entertainment", "Others"]
+CATEGORIES = ["Food", "Health", "Commute", "Utilities", "Entertainment", "Others", "Income"]
 
 puts "Creating categories…"
 categories = CATEGORIES.map do |title|
@@ -31,7 +31,8 @@ DESCRIPTIONS = {
   "Commute"       => ["Train fare", "Bus IC top-up", "Taxi", "Bike repair", "Highway toll"],
   "Utilities"     => ["Electric bill", "Water bill", "Gas bill", "Mobile plan", "Home internet"],
   "Entertainment" => ["Cinema", "Arcade", "Concert ticket", "Streaming sub", "Karaoke"],
-  "Others"        => ["Stationery", "Gift", "Home goods", "Random purchase", "Household"]
+  "Others"        => ["Stationery", "Gift", "Home goods", "Random purchase", "Household"],
+  "Income"        => ["Income"]
 }
 
 50.times do
@@ -43,7 +44,8 @@ DESCRIPTIONS = {
     category: category,
     description: DESCRIPTIONS[title].sample,
     amount: rand(300..12_000),
-    date: Faker::Date.between(from: 90.days.ago, to: Date.today)
+    date: Faker::Date.between(from: 90.days.ago, to: Date.today),
+
   )
 end
 
