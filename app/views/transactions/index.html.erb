@@ -1,25 +1,32 @@
-<h2>Transactions Index page</h2>
-<%# If we wan to sort it out in html file we need this line in the controller
-    # @transactions = current_user.transactions.order(created_at: :desc) %>
-<div class="balance" style="display:flex; align-items:center; gap:.5rem; margin:2;">
-  <h4 style="margin:0;">Available Balance:</h4>
-  <p style="margin:0;"><%= "¥#{@available_balance}" %></p>
+<%# Header  %>
+<div id="header">
+  <h2>Transactions Index page(SHOULD BE CHANGED)</h2>
 </div>
-
-<div class="balance" style="display:flex; align-items:center; gap:.5rem; margin:2;">
-  <h4 style="margin:0;">Total Income</h4>
-  <p style="margin:0;"><%= "¥#{@total_income}" %></p>
+<div id="dashboard_stats_container"
+     class="d-flex flex-row box-size p-0 gap-3">
+  <div id="last_month_comparison_stat"
+       class="flex-fill rounded-5 shadow p-3 stats_background">
+    <%# Total balance %>
+    <div class="fw-bold">Available Balance: </div>
+    <div class="fs-3 fw-bold text-success">
+      <%= "¥ #{@available_balance}" %>
+    </div>
+    <%# Total Income %>
+    <div class="fw-bold text-end">Total Income:
+      <div class="fs-3 fw-bold text-success">
+        <%= "¥#{@total_income}" %>
+      </div>
+    </div>
+    <%# Total Spent %>
+    <div class="fw-bold text-end">Total Spent:
+      <div class="fs-3 fw-bold text-danger">
+        <%= "¥#{@total_spent}" %>
+      </div>
+    </div>
+  </div>
 </div>
-
-
-<div class="amount_spent" style="display:flex; align-items:center; gap:.5rem;">
-  <h4 style="margin:0;">Total spent</h4>
-  <p style="margin:0;"><%= "¥#{@total_spent}" %></p>
-</div>
-
 <%# CREATE TRANSACTION FORM %>
-
-<div id="create_transaction_form" class="w-90-max-800 rounded-5 shadow p-3 mb-5">
+<div class="box-size">
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <span class="nav-link tab-underlined active" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings-tab-pane" role="tab" aria-controls="bookings-tab-pane" aria-selected="true">Expense</span>
@@ -37,6 +44,7 @@
           <div class="col-4 col-md-3">Category</div>
           <div class="col-2 col-md-2 text-end">Amount</div>
         </div>
+
         <% @transactions.select { |t| t.category&.title != "Income" }.each do |transaction| %>
           <div class="row align-items-center border-bottom py-2">
             <div class="col-2 col-md-2"><%= transaction.date %></div>
@@ -71,3 +79,4 @@
     </div>
   </div>
 </div>
+<%# CREATE TRANSACTION FORM %>

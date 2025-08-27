@@ -1,12 +1,28 @@
 <%# BALANCE %>
-<div id="balance_container" class="box-size">
+
+<div id="dashboard_stats_container"
+     class="d-flex flex-row box-size p-0 gap-3">
+  <div id="last_month_comparison_stat"
+       class="flex-fill rounded-5 shadow p-3 stats_background">
+    <div class="fw-bold">Available Balance: </div>
+    <div class="fs-3 fw-bold text-success">
+      <%= "¥ #{current_user.available_balance}" %>
+    </div>
+    <div class="fw-bold text-end">Total Spent:
+      <div class="fs-3 fw-bold text-danger">
+        <%= "¥#{current_user.total_spent}" %>
+      </div>
+    </div>
+  </div>
 </div>
 
 
 <%# STATS %>
 
-<div id="dashboard_stats_container" class="d-flex flex-row box-size p-0 gap-3 mb-3">
-  <div id="last_month_comparison_stat" class="flex-fill rounded-5 shadow p-3 stats_background">
+<div id="dashboard_stats_container"
+     class="d-flex flex-row box-size p-0 gap-3">
+  <div id="last_month_comparison_stat"
+       class="flex-fill rounded-5 shadow p-3 stats_background">
 
     <div class="fw-bold">Compared to last month</div>
     <div class="fs-3 fw-bold text-primary">
@@ -28,15 +44,12 @@
 
 
 <%# AI CHAT FORM %>
-
 <div id="ai_chat_input" class="box-size rounded-5 shadow p-3 mb-3">
   <p>chat with AI here</p>
-
 </div>
 
 
 <%# CREATE TRANSACTION FORM %>
-
 <div id="create_transaction_form" class="box-size rounded-5 shadow p-3 mb-3">
 
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
