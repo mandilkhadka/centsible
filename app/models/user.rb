@@ -10,4 +10,18 @@ class User < ApplicationRecord
 
     # validates :name, presence: true
     # validates :starting_balance, numericality: { only_integer: true }
+
+
+  def total_income
+    transactions.where(transaction_type: "income").sum(:amount)
+  end
+
+  def total_spent
+    transactions.where(transaction_type: "expense").sum(:amount)
+  end
+
+  def available_balance
+    starting_balance + total_income - total_spent
+  end
+
 end

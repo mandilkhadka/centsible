@@ -5,10 +5,9 @@ class TransactionsController < ApplicationController
     # Sorting it out in html file
     @transactions = Transaction.order(date: :desc)
 
-
-    @total_spent = current_user.transactions.sum(:amount)
-    @available_balance = current_user.starting_balance - @total_spent
-    # @income = current_user.starting_balance
+    @total_income = current_user.total_income
+    @total_spent = current_user.total_spent
+    @available_balance = current_user.available_balance
   end
 
   def create
