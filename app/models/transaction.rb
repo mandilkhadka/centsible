@@ -2,7 +2,7 @@ class Transaction < ApplicationRecord
   belongs_to :user
   belongs_to :category
 
-  validates :amount, presence: true, numericality: { only_integer: true }
+  validates :amount, presence: true, numericality: { greater_than: 0}
   validates :description, presence: true
 
   def self.total_expenses_from_start_of_month
@@ -20,7 +20,7 @@ class Transaction < ApplicationRecord
   def self.percentage_compared_to_last_month
     this_month = Transaction.total_expenses_from_start_of_month
     last_month = Transaction.total_expenses_until_same_day_last_month
-    spending_difference = (this_month - last_month) / last_month.to_f
+    (this_month - last_month) / last_month.to_f
   end
 
   def self.daily_average

@@ -1,7 +1,6 @@
 <h2>Transactions Index page</h2>
-    <%# If we wan to sort it out in html file we need this line in the controller
+<%# If we wan to sort it out in html file we need this line in the controller
     # @transactions = current_user.transactions.order(created_at: :desc) %>
-
 <div class="balance" style="display:flex; align-items:center; gap:.5rem; margin:2;">
   <h4 style="margin:0;">Available Balance:</h4>
   <p style="margin:0;"><%= "¥#{@available_balance}" %></p>
@@ -10,18 +9,12 @@
   <h4 style="margin:0;">Total Income</h4>
   <p style="margin:0;"><%= "¥#{@total_income}" %></p>
 </div>
-
 <div class="amount_spent" style="display:flex; align-items:center; gap:.5rem;">
   <h4 style="margin:0;">Total spent</h4>
   <p style="margin:0;"><%= "¥#{@total_spent}" %></p>
 </div>
-
-
-
 <%# CREATE TRANSACTION FORM %>
-
 <div id="create_transaction_form" class="w-90-max-800 rounded-5 shadow p-3 mb-5">
-
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <span class="nav-link tab-underlined active" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings-tab-pane" role="tab" aria-controls="bookings-tab-pane" aria-selected="true">Expense</span>
@@ -29,62 +22,47 @@
     <li class="nav-item" role="presentation">
       <span class="nav-link tab-underlined" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests-tab-pane" role="tab" aria-controls="requests-tab-pane" aria-selected="false">Income</span>
     </li>
-
   </ul>
-
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade py-3 show active" id="bookings-tab-pane" role="tabpanel" aria-labelledby="bookings-tab" tabindex="0">
-<div class="container px-0">
-
-  <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
-    <div class="col-2 col-md-2">Date</div>
-    <div class="col-4 col-md-5">Description</div>
-    <div class="col-4 col-md-3">Category</div>
-    <div class="col-2 col-md-2 text-end">Amount</div>
-  </div>
-
-<% @transactions.select { |t| t.category&.title != "Income" }.each do |transaction| %>
-
-
-    <div class="row align-items-center border-bottom py-2">
-      <div class="col-2 col-md-2"><%= transaction.date %></div>
-      <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
-      <div class="col-4 col-md-3"><%= transaction.category&.title %></div>
-      <div class="col-2 col-md-2 text-end text-danger <%= transaction.amount.to_f < 0 %>">
-        <%= "¥#{transaction.amount}" %>
+      <div class="container px-0">
+        <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
+          <div class="col-2 col-md-2">Date</div>
+          <div class="col-4 col-md-5">Description</div>
+          <div class="col-4 col-md-3">Category</div>
+          <div class="col-2 col-md-2 text-end">Amount</div>
+        </div>
+        <% @transactions.select { |t| t.category&.title != "Income" }.each do |transaction| %>
+          <div class="row align-items-center border-bottom py-2">
+            <div class="col-2 col-md-2"><%= transaction.date %></div>
+            <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
+            <div class="col-4 col-md-3"><%= transaction.category&.title %></div>
+            <div class="col-2 col-md-2 text-end text-danger <%= transaction.amount.to_f < 0 %>">
+              <%= "¥#{transaction.amount}" %>
+            </div>
+          </div>
+        <% end %>
       </div>
     </div>
-  <% end %>
-
-</div>
-    </div>
-
     <div class="tab-pane fade py-3" id="requests-tab-pane" role="tabpanel" aria-labelledby="requests-tab" tabindex="0">
-<div class="container px-0">
-
-  <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
-    <div class="col-2 col-md-2">Date</div>
-    <div class="col-4 col-md-5">Description</div>
-    <div class="col-4 col-md-3">Category</div>
-    <div class="col-2 col-md-2 text-end">Amount</div>
-  </div>
-
-<% @transactions.select { |t| t.category&.title == "Income" }.each do |transaction| %>
-
-    <div class="row align-items-center border-bottom py-2">
-      <div class="col-2 col-md-2"><%= transaction.date %></div>
-      <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
-      <div class="col-4 col-md-3"><%= transaction.category&.title %></div>
-      <div class="col-2 col-md-2 text-end text-success <%= transaction.amount.to_f < 0 %>">
-        <%= "¥#{transaction.amount}" %>
+      <div class="container px-0">
+        <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
+          <div class="col-2 col-md-2">Date</div>
+          <div class="col-4 col-md-5">Description</div>
+          <div class="col-4 col-md-3">Category</div>
+          <div class="col-2 col-md-2 text-end">Amount</div>
+        </div>
+        <% @transactions.select { |t| t.category&.title == "Income" }.each do |transaction| %>
+          <div class="row align-items-center border-bottom py-2">
+            <div class="col-2 col-md-2"><%= transaction.date %></div>
+            <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
+            <div class="col-4 col-md-3"><%= transaction.category&.title %></div>
+            <div class="col-2 col-md-2 text-end text-success <%= transaction.amount.to_f < 0 %>">
+              <%= "¥#{transaction.amount}" %>
+            </div>
+          </div>
+        <% end %>
       </div>
     </div>
-  <% end %>
-
-
-
-</div>
-    </div>
-
   </div>
 </div>

@@ -3,5 +3,4 @@ class Category < ApplicationRecord
 
   validates :title, presence: true
   validates :limit, numericality: { only_integer: true }, allow_nil: true
-
 end
