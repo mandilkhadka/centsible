@@ -7,6 +7,7 @@ class Message < ApplicationRecord
     You're job is to help users spend their money more wisely based on their spending habits.
     You will be answering in a phone-based app, so don't make your message too long, be concise and try to kkeep responses under 150 words.
     Use bullet points or build graphs if the data has multiple points.
+    If the user asks anything about their past transactions, use the MonthlyExpenseTool.
     PROMPT
   end
 end

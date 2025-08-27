@@ -1,4 +1,6 @@
 class MessagesController < ApplicationController
+  require 'redcarpet'
+  
   def index
     @messages = Message.all
     @user_message = Message.new
@@ -8,7 +10,8 @@ class MessagesController < ApplicationController
     user_message = Message.create(content: message_params[:content], role: 'user', user: current_user)
     instructions = user_message.build_content
     build_conversation_history
-    response = @ruby_llm_chat.with_instructions(instructions).ask(user_message.content).content
+    tool = PastExpenseTool.new(current_user)
+    response = @ruby_llm_chat.with_instructions(instructions).with_tool(tool).ask(user_message.content).content
     @ai_message = Message.create(content: response, role: 'assistant', user: current_user)
     if @ai_message
       redirect_to messages_path
@@ -19,12 +22,8 @@ class MessagesController < ApplicationController
 
   def build_conversation_history
     @ruby_llm_chat = RubyLLM.chat(model: 'gemini-2.0-flash')
-    Message.all.each do |message|
+    current_user.messages.where(role: 'user').each do |message|
       @ruby_llm_chat.add_message(content: message.content, role: message.role)
-    end
-    @ruby_llm_chat = RubyLLM.chat(model: 'gemini-2.0-flash')
-    Transaction.all.each do |transaction|
-      @ruby_llm_chat.add_message(content: "#{transaction.category.title}: #{transaction.amount}", role: 'user')
     end
   end
 

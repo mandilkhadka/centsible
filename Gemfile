@@ -77,3 +77,7 @@ end
 gem "ostruct"
 gem "faker"
 gem "ruby_llm"
+
+gem "groupdate", "~> 6.7"
+
+gem "redcarpet", "~> 3.6"
