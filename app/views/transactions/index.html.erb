@@ -5,15 +5,20 @@
   <h4 style="margin:0;">Available Balance:</h4>
   <p style="margin:0;"><%= "¥#{@available_balance}" %></p>
 </div>
+
 <div class="balance" style="display:flex; align-items:center; gap:.5rem; margin:2;">
   <h4 style="margin:0;">Total Income</h4>
   <p style="margin:0;"><%= "¥#{@total_income}" %></p>
 </div>
+
+
 <div class="amount_spent" style="display:flex; align-items:center; gap:.5rem;">
   <h4 style="margin:0;">Total spent</h4>
   <p style="margin:0;"><%= "¥#{@total_spent}" %></p>
 </div>
+
 <%# CREATE TRANSACTION FORM %>
+
 <div id="create_transaction_form" class="w-90-max-800 rounded-5 shadow p-3 mb-5">
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">

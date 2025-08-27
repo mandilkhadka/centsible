@@ -15,5 +15,6 @@ Rails.application.routes.draw do
   root to: "users#dashboard"
   resources :transactions, only: [:new, :create, :index]
   resources :users, only: [:show, :edit, :update]
+  resources :categories, only: [:index, :new, :create]
 
 end
