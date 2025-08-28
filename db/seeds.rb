@@ -48,7 +48,7 @@ TRANSACTION = ['expense', 'income']
     description: DESCRIPTIONS[title].sample,
     amount: rand(300..12_000),
     date: Faker::Date.between(from: 90.days.ago, to: Date.today),
-    transaction_type: TRANSACTION.sample
+    transaction_type: category.title == 'Income' ? 'income' : 'expense'
   )
 end
 
