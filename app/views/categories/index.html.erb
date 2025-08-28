@@ -4,61 +4,42 @@
 <%= render "users/balance_box" %>
 </div>
 <%# HEADER PARTIAL %>
-<%# Categories piechart/ chart %>
+
+<%# NAV BAR %>
 <div class="box-size">
   <% filtered_totals = @category_totals.reject { |title, _| title == "Income" } %>
   <%= pie_chart filtered_totals, colors: Category::COLORS, library: { pieSliceText: 'value' } %>
 </div>
-<div class="container">
-  <div class="box-size card-body">
-    <div id="transaction_index">
-      <h3 class="card-title">Categories</h3>
-      <% @transactions.each_with_index do |(category, transactions), index| %>
-          <% if category.title != "Income"%>
 
-        <div class="d-flex justify-content-between">
-          <h4 class="mt-3" style="background-color: <%= Category::COLORS[index] %>;"><%= category.title %></h4>
-          <h4 class="mt-3"> ¥ <%= transactions.pluck(:amount).sum %></h4>
-        </div>
-        <% end %>
-
-        <div class="row" >
+<%# Transactions by Category - Collapsible Cards %>
+<div class="container mt-4">
+  <% @transactions.each_with_index do |(category, transactions), index| %>
+    <% next if category.title == "Income" || transactions.empty? %>
+    <% category_total = transactions.sum(&:amount) %>
+    <div class="card mb-2 rounded-4">
+      <div class="card-header rounded-3" id="heading-<%= category.id %>">
+        <h5 class="mb-0">
+          <button class="btn text-dark text-decoration-none d-flex justify-content-between align-items-center w-100 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<%= category.id %>" aria-expanded="false" aria-controls="collapse-<%= category.id %>">
+            <!-- Left side: icon -->
+            <span class="me-2"><i class="fa-solid fa-angles-down fa-xs"></i></span>
+            <span class="me-2"><strong><%= category.title %></strong></span>
+            <!-- Right side: total sum -->
+            <div class="d-flex ms-auto">
+              <span>¥<%= category_total %></span>
+            </div>
+          </button>
+        </h5>
+      </div>
+      <div id="collapse-<%= category.id %>" class="collapse" aria-labelledby="heading-<%= category.id %>">
+        <div class="card-category p-2">
           <% transactions.each do |transaction| %>
-          <%# raise %>
-
-            <div class="col-4">
-              <p><%= transaction.description %></p>
+            <div class="d-flex justify-content-between py-1">
+              <div><%= transaction.description %></div>
+              <div>¥<%= transaction.amount %></div>
             </div>
-            <div class="col-4">
-              <p><%= transaction.created_at.strftime("%b %d") %></p>
-            </div>
-            <div class="col-4">
-              <p> - ¥<%= transaction.amount %></p>
-            </div>
-
-
           <% end %>
         </div>
-      <% end %>
-    </div>
-  </div>
-  <div class="box-size card-body mt-3 mb-3">
-    <div class="w-100 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
-      <h2>Add a New Category  <i class="fa-solid fa-circle-plus fa-xl" style="color: #99bc85;"></i> </h2>
-    </div>
-    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Add a New Category</h5>
-        <%# <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button> %>
-      </div>
-      <div class="offcanvas-body small">
-        <%= simple_form_for @category do |f| %>
-          <%= f.input :title %>
-          <%= f.submit %>
-        <% end %>
       </div>
     </div>
-  </div>
-  <%# NAV BAR %>
+  <% end %>
 </div>
-<%# NAV BAR %>
