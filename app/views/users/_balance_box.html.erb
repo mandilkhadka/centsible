@@ -1,20 +1,16 @@
 <%# BALANCE %>
-
-
 <div id="balance_box"
-    class="box-size mb-4 rounded-5 shadow p-4 bg-success text-white d-flex justify-content-between">
- <div>
-   <div class="fw-bold">Available Balance:</div>
-   <div class="fs-3 fw-bold">
-     <%= number_to_currency(current_user.available_balance, unit: "¥", format: "%u %n") %>
-   </div>
- </div>
-
-
- <div class="text-end">
-   <div class="fw-bold text-white">Total Spent:</div>
-   <div class="fs-3 fw-bold text-white">
-     <%= number_to_currency(current_user.total_spent, unit: "¥", format: "%u %n") %>
-   </div>
- </div>
+    class="box-size mb-4 rounded-5 shadow-sm p-4 bg-success text-white d-flex justify-content-between">
+  <div>
+    <div class="fw-bold">Available Balance:</div>
+    <div class="fs-3 fw-bold">
+      <%= number_to_currency(current_user.available_balance, unit: "¥", format: "%u %n") %>
+    </div>
+  </div>
+  <div class="text-end">
+    <div class="fw-bold text-white">Total Spent:</div>
+    <div class="fs-3 fw-bold text-white">
+      <%= number_to_currency(current_user.total_spent, unit: "¥", format: "%u %n") %>
+    </div>
+  </div>
 </div>
