@@ -1,21 +1,23 @@
-<div id="messages">
-  <% @messages.each do |message| %>
-    <% if message.role == "user" %>
-      <div class="d-flex justify-content-end mb-2">
-        <div class="bg-white px-3 pb-0 pt-3 rounded-pill">
-          <%= message.content %>
+<div id="messages container" data-controller="messages">
+  <div id="messages">
+    <% @messages.each do |message| %>
+      <% if message.role == "user" %>
+        <div class="d-flex justify-content-end mb-2">
+          <div class="bg-white px-3 pb-0 pt-3 rounded-pill">
+            <%= message.content %>
+          </div>
         </div>
-      </div>
-    <% elsif message.role == "assistant" %>
-      <div class="d-flex justify-content-start mb-5">
-        <div class="px-3 pb-0 pt-3">
-          <%= markdown(message.content) %>
+      <% elsif message.role == "assistant" %>
+        <div class="d-flex justify-content-start mb-5">
+          <div class="px-3 pb-0 pt-3">
+            <%= markdown(message.content) %>
+          </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
-  <% end %>
+  </div>
 </div>
-<%= simple_form_for(@user_message) do |f| %>
+<%= simple_form_for(@user_message, url: messages_path) do |f| %>
   <%= f.input :content, placeholder: "Message..", required: true, label: false, input_html: { class: "my-4" } %>
   <%= f.button :submit, class: "btn btn-primary" %>
 
