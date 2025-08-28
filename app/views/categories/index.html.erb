@@ -16,7 +16,7 @@
   <%= pie_chart filtered_totals, colors: category_colors.values, library: { pieSliceText: 'value' } %>
 </div>
 <%# Transactions by Category - Collapsible Cards %>
-<div class="box-size">
+<div class="box-size container mt-4">
   <% @transactions.each_with_index do |(category, transactions), index| %>
     <% next if category.title == "Income" || transactions.empty? %>
     <% category_total = transactions.sum(&:amount) %>
@@ -53,6 +53,7 @@
     </div>
   <% end %>
 </div>
+
 <div class="box-size card-body mt-3 mb-3">
   <div class="w-100 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
     <h2>Add a New Category  <i class="fa-solid fa-circle-plus fa-xl" style="color: #99bc85;"></i> </h2>
@@ -72,3 +73,4 @@
 </div>
 <%# NAV BAR %>
 </div>
+
