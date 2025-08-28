@@ -12,7 +12,7 @@
 </div>
 
 <%# Transactions by Category - Collapsible Cards %>
-<div class="container mt-4">
+<div class="box-size container mt-4">
   <% @transactions.each_with_index do |(category, transactions), index| %>
     <% next if category.title == "Income" || transactions.empty? %>
     <% category_total = transactions.sum(&:amount) %>
