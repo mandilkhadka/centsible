@@ -10,19 +10,16 @@ $headings-font-family:   $headers-font;
 $body-bg:                $background-beige;
 $font-size-base:         1rem;
 
+
 // Colors
 $body-color: $gray;
 $primary:    $blue;
+$secondary:  $chat-green;
 $success:    $green;
-$info:       $yellow;
+$info:       $table-brown;
 $danger:     $red;
 $warning:    $orange;
-$brown:      $table-brown;
 
-$green: #99BC85;
-$chat-green: #E4EFE7;
-$background-beige: #FDFAF6;
-$table-brown: #FAF1E6;
 
 // Buttons & inputs' radius
 $border-radius-sm:           .0625rem;
@@ -30,5 +27,6 @@ $border-radius:               .125rem;
 $border-radius-lg:            .25rem;
 $border-radius-xl:            .5rem;
 $border-radius-xxl:           1rem;
+
 
 // Override other variables below!
