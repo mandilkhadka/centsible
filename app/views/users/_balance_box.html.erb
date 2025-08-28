@@ -1,8 +1,7 @@
 <%# BALANCE %>
-
-
 <div id="balance_box"
     class="box-size mb-4 rounded-5 shadow-sm p-4 bg-success text-white d-flex justify-content-between">
+
  <div>
    <div class="fw-bold">Available Balance:</div>
    <div class="fs-3 fw-bold">
@@ -17,4 +16,5 @@
      <%= number_to_currency(current_user.total_spent, unit: "¥", precision: 0, delimiter: ",") %>
    </div>
  </div>
+
 </div>

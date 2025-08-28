@@ -1,21 +1,26 @@
-<div id="header">
-  <h2>Transactions Index page(SHOULD BE CHANGED)</h2>
+
+<%# Header  %>
+<div class="box-size">
+  <div id="header">
+    <h2 class="d-flex">Transactions </h2>
+  </div>
 </div>
 <div id="dashboard_stats_container"
-    class="d-flex flex-row box-size p-0 gap-3 mb-5">
-<div id="last_month_comparison_stat"
-      class="flex-fill rounded-5 shadow p-3 stats_background">
-  <%# Total balance %>
-  <div class="fw-bold">Available Balance: </div>
-  <div class="fs-3 fw-bold text-success">
-    <%= "¥ #{@available_balance}" %>
-  </div>
-  <%# Total Income %>
-  <div class="fw-bold text-end">Total Income:
+    class="d-flex flex-row transactions custom box-size p-0 gap-3 mb-5">
+  <div id="last_month_comparison_stat"
+      class="flex-fill rounded-5 shadow-sm p-3 stats_background">
+    <%# Total balance %>
+    <div class="fw-bold">Available Balance: </div>
     <div class="fs-3 fw-bold text-success">
-      <%= "¥#{@total_income}" %>
+      <%= "¥ #{@available_balance}" %>
     </div>
-  </div>
+    <%# Total Income %>
+    <div class="fw-bold text-end">Total Income:
+      <div class="fs-3 fw-bold text-success">
+        <%= "¥#{@total_income}" %>
+      </div>
+    </div>
+
     <%# Total Spent %>
     <div class="fw-bold text-end">Total Spent:
       <div class="fs-3 fw-bold text-danger">
@@ -23,13 +28,19 @@
       </div>
     </div>
   </div>
+
 </div>
+<%# /// Categories Button // %>
+<div class="box-size transactions custom rounded-5 mb-5 shadow-sm p-3 stats_background">
+  <div class="text-center">
+    <%= link_to "Categories", categories_path, class: "btn btn-primary d-grid gap-2 col-6 mx-auto rounded-lg" %>
+  </div>
 
-
-
-
+</div>
 <%# CREATE TRANSACTION FORM %>
-<div class="box-size rounded-5 shadow p-3 stats_background">
+
+<div class="box-size transactions custom rounded-5 shadow-sm p-3 stats_background mb-2">
+
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <span class="nav-link tab-underlined active" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings-tab-pane" role="tab" aria-controls="bookings-tab-pane" aria-selected="true">Expense</span>
@@ -41,6 +52,7 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade py-3 show active" id="bookings-tab-pane" role="tabpanel" aria-labelledby="bookings-tab" tabindex="0">
       <div class="container px-0">
+
       <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
         <div class="col-2 col-md-2">Date</div>
           <div class="col-4 col-md-5">Description</div>
@@ -55,6 +67,7 @@
             <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
             <div class="col-4 col-md-3"><%= transaction.category&.title %></div>
             <div class="col-2 col-md-2 text-end text-danger <%= transaction.amount.to_f < 0 %>">
+
               <%= "¥#{transaction.amount}" %>
             </div>
           </div>
