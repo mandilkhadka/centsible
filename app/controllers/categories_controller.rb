@@ -2,11 +2,8 @@ class CategoriesController < ApplicationController
   def index
     @category = Category.new
     @transactions = current_user.transactions.group_by(&:category)
-
     @category_totals = current_user.transactions.joins(:category).group("categories.title").sum(:amount)
-# raise
   end
-
   def create
     @category = Category.new(category_params)
     @category.user = current_user

@@ -1,12 +1,16 @@
 class Category < ApplicationRecord
   COLORS = %w[
-    red
-    green
-    yellow
-    blue
-    brown
-    pink
-    grey
+    #d0b1fc
+    #F7C5DD
+    #DBD2E0
+    #FAEDC7
+    #CAEEBE
+    #FDFD95
+    #E3E9BE
+    #FFFEF8
+    #98E2F7
+    #627BEF
+    #67BC76
   ]
   belongs_to :user
 

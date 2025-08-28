@@ -1,25 +1,31 @@
 <%# HEADER PARTIAL %>
-<%# | %>
-<%# | %>
+
+<div class="box-size">
+<%= render "users/balance_box" %>
+</div>
 <%# HEADER PARTIAL %>
-
 <%# Categories piechart/ chart %>
-
-<%= pie_chart @category_totals, colors: Category::COLORS, library: { pieSliceText: 'value'} %>
-
-
+<div class="box-size">
+  <% filtered_totals = @category_totals.reject { |title, _| title == "Income" } %>
+  <%= pie_chart filtered_totals, colors: Category::COLORS, library: { pieSliceText: 'value' } %>
+</div>
 <div class="container">
   <div class="box-size card-body">
     <div id="transaction_index">
       <h3 class="card-title">Categories</h3>
       <% @transactions.each_with_index do |(category, transactions), index| %>
+          <% if category.title != "Income"%>
+
         <div class="d-flex justify-content-between">
-          <h4 class="mt-3"><%= category.title %></h4>
+          <h4 class="mt-3" style="background-color: <%= Category::COLORS[index] %>;"><%= category.title %></h4>
           <h4 class="mt-3"> ¥ <%= transactions.pluck(:amount).sum %></h4>
         </div>
-        <div class="row" style="background-color: <%= Category::COLORS[index] %>;">
+        <% end %>
 
+        <div class="row" >
           <% transactions.each do |transaction| %>
+          <%# raise %>
+
             <div class="col-4">
               <p><%= transaction.description %></p>
             </div>
@@ -29,6 +35,8 @@
             <div class="col-4">
               <p> - ¥<%= transaction.amount %></p>
             </div>
+
+
           <% end %>
         </div>
       <% end %>
