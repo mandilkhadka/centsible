@@ -1,4 +1,13 @@
 class Category < ApplicationRecord
+  COLORS = %w[
+    red
+    green
+    yellow
+    blue
+    brown
+    pink
+    grey
+  ]
   belongs_to :user
 
   validates :title, presence: true

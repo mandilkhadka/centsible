@@ -2,16 +2,23 @@
 <%# | %>
 <%# | %>
 <%# HEADER PARTIAL %>
+
+<%# Categories piechart/ chart %>
+
+<%= pie_chart @category_totals, colors: Category::COLORS, library: { pieSliceText: 'value'} %>
+
+
 <div class="container">
   <div class="box-size card-body">
     <div id="transaction_index">
       <h3 class="card-title">Categories</h3>
-      <% @transactions.each do |category, transactions| %>
+      <% @transactions.each_with_index do |(category, transactions), index| %>
         <div class="d-flex justify-content-between">
           <h4 class="mt-3"><%= category.title %></h4>
           <h4 class="mt-3"> ¥ <%= transactions.pluck(:amount).sum %></h4>
         </div>
-        <div class="row">
+        <div class="row" style="background-color: <%= Category::COLORS[index] %>;">
+
           <% transactions.each do |transaction| %>
             <div class="col-4">
               <p><%= transaction.description %></p>
