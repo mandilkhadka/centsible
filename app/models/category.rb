@@ -4,10 +4,10 @@ class Category < ApplicationRecord
     #F7C5DD
     #DBD2E0
     #FAEDC7
+    #8399A6
     #CAEEBE
     #FDFD95
     #E3E9BE
-    #FFFEF8
     #98E2F7
     #627BEF
     #67BC76
