@@ -51,6 +51,15 @@ gem "font-awesome-sass", "~> 6.1"
 gem "simple_form", github: "heartcombo/simple_form"
 gem "sassc-rails"
 
+# Makes the graph with JS
+gem "chartkick"
+
+# Helper for the chartkick gem to work with the dates
+
+gem "groupdate", "~> 6.7"
+
+gem "redcarpet", "~> 3.6"
+
 group :development, :test do
   gem "dotenv-rails"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -77,7 +86,3 @@ end
 gem "ostruct"
 gem "faker"
 gem "ruby_llm"
-
-gem "groupdate", "~> 6.7"
-
-gem "redcarpet", "~> 3.6"
