@@ -35,9 +35,12 @@ DESCRIPTIONS = {
   "Income"        => ["Income"]
 }
 
+TRANSACTION = ['expense', 'income']
+
 50.times do
   category = categories.sample
   title = category.title
+
 
   Transaction.create!(
     user: user,
@@ -45,7 +48,7 @@ DESCRIPTIONS = {
     description: DESCRIPTIONS[title].sample,
     amount: rand(300..12_000),
     date: Faker::Date.between(from: 90.days.ago, to: Date.today),
-
+    transaction_type: TRANSACTION.sample
   )
 end
 
