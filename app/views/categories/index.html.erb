@@ -16,15 +16,17 @@
   <%= pie_chart filtered_totals, colors: category_colors.values, library: { pieSliceText: 'value' } %>
 </div>
 <%# Transactions by Category - Collapsible Cards %>
-<div class="container mt-4">
+<div class="box-size">
   <% @transactions.each_with_index do |(category, transactions), index| %>
     <% next if category.title == "Income" || transactions.empty? %>
     <% category_total = transactions.sum(&:amount) %>
     <div class="card mb-2 rounded-4">
       <div class="card-header rounded-3" id="heading-<%= category.id %>">
-      <p class="text-secondary text-opacity-25" style="background-color: <%= category_colors[category.title] %>"> ______ </p>
         <h5 class="mb-0">
           <button class="btn text-dark text-decoration-none d-flex justify-content-between align-items-center w-100 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<%= category.id %>" aria-expanded="false" aria-controls="collapse-<%= category.id %>">
+            <%# Checkbox-style box color  %>
+            <div class="me-2 mt-1" style="width: 20px; height: 20px; background-color: <%= category_colors[category.title] %>; border: 1px solid #ccc; border-radius: 4px;"></div>
+            <%# Checkbox-style box color  %>
             <!-- Left side: icon -->
             <span class="me-2" ><i class="fa-solid fa-angles-down fa-xs"></i></span>
             <span class="me-2"><strong><%= category.title %></strong></span>
@@ -38,9 +40,6 @@
           </button>
         </h5>
       </div>
-      <%# color displaying on the container %>
-      <p class="text-secondary text-opacity-25" style="background-color: <%= category_colors[category.title] %>"> ______ </p>
-      <%# color displaying on the container %>
       <div id="collapse-<%= category.id %>" class="collapse" aria-labelledby="heading-<%= category.id %>">
         <div class="card-category p-2">
           <% transactions.each do |transaction| %>
