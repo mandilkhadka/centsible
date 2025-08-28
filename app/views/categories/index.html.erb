@@ -3,12 +3,22 @@
   <%= render "users/balance_box" %>
 </div>
 <%# HEADER PARTIAL %>
+
+<%# making colors same to piechart and the dropdown  %>
+<% category_colors = {} %>
+<% @category_totals.each_with_index do |(title, _), index| %>
+  <% next if title == "Income" %>
+  <% category_colors[title] = Category::COLORS[index] %>
+<% end %>
+<%# making colors same to piechart and the dropdown  %>
+
 <%# NAV BAR %>
 <div class="box-size">
   <% filtered_totals = @category_totals.reject { |title, _| title == "Income" } %>
-  <%= pie_chart filtered_totals, colors: Category::COLORS, library: { pieSliceText: 'value' } %>
+  <%= pie_chart filtered_totals, colors: category_colors.values, library: { pieSliceText: 'value' } %>
 </div>
 <%# Transactions by Category - Collapsible Cards %>
+
 <div class="box-size">
   <div class="container mt-4">
     <% @transactions.each_with_index do |(category, transactions), index| %>
@@ -57,6 +67,28 @@
         </div>
       </div>
     </div>
-    <%# NAV BAR %>
+
+  <% end %>
+</div>
+
+<div class="box-size card-body mt-3 mb-3">
+  <div class="w-100 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
+    <h2>Add a New Category  <i class="fa-solid fa-circle-plus fa-xl" style="color: #99bc85;"></i> </h2>
+  </div>
+  <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasBottomLabel">Add a New Category</h5>
+      <%# <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button> %>
+    </div>
+    <div class="offcanvas-body small">
+      <%= simple_form_for @category do |f| %>
+        <%= f.input :title %>
+        <%= f.submit %>
+      <% end %>
+    </div>
   </div>
 </div>
+<%# NAV BAR %>
+</div>
+
+
