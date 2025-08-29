@@ -16,11 +16,13 @@
       <% end %>
    </div>
    <div>
-     <% if current_user.transactions.percentage_compared_to_last_month.positive? %>
-       You are spending more than last month.
-     <% else %>
-       Nice! You spent less.
-     <% end %>
+      <% if current_user.transactions.total_expenses_until_same_day_last_month == 0 %>
+      
+      <% elsif current_user.transactions.percentage_compared_to_last_month.positive? %>
+        You are spending more than last month.
+      <% else %>
+        Nice! You spent less.
+      <% end %>
    </div>
  </div>
  <div id="daily_average_stat" class="flex-fill rounded-5 shadow-sm p-3 bg-secondary">
