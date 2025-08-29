@@ -65,7 +65,8 @@
     <div class="offcanvas-body small">
       <%= simple_form_for @category do |f| %>
         <%= f.input :title %>
-        <%= f.submit %>
+        <%= f.input :limit, as: :integer, step: 1000,  placeholder: "Set your Monthly Budget(Optional)", label: false, input_html: { min: "0" } %>
+        <%= f.button :submit, class: "btn btn-primary" %>
       <% end %>
     </div>
   </div>
