@@ -1,4 +1,4 @@
-<div id="messages container" data-controller="messages">
+<div id="messages-container" data-controller="messages">
   <div id="messages">
     <% @messages.each do |message| %>
       <% if message.role == "user" %>
@@ -17,7 +17,7 @@
     <% end %>
   </div>
 </div>
-<%= simple_form_for(@user_message, url: messages_path) do |f| %>
+<%= simple_form_for(@user_message, url: messages_path, html: { id: "chat-form" }) do |f| %>
   <%= f.input :content, placeholder: "Message..", required: true, label: false, input_html: { class: "my-4" } %>
   <%= f.button :submit, class: "btn btn-primary" %>
 

@@ -25,7 +25,6 @@ class MessagesController < ApplicationController
         )
       ]
     end
-
     format.html { redirect_to messages_path }
   end
     else
