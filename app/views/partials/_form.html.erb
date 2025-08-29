@@ -7,5 +7,13 @@
   <% else %>
   <% end %>
   <%= f.input :date, as: :date, required: true, label: false, input_html: { class: "my-4" } %>
-  <%= f.button :submit, class: "btn btn-primary" %>
+  <div class="text-center">
+    <%= f.button :button, class: "btn btn-primary text-white rounded-5" do %>
+      <% if expense %>
+        <i class="fa-solid fa-check me-1"></i> Save Expense
+      <% else %>
+        <i class="fa-solid fa-coins me-1"></i> Save Income
+      <% end %>
+    <% end %>
+  </div>
 <% end %>
