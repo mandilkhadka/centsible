@@ -3,6 +3,7 @@ require "faker"
 puts "Cleaning up…"
 Transaction.delete_all
 Category.delete_all
+Message.delete_all
 User.delete_all
 
 puts "Creating user…"
@@ -10,7 +11,7 @@ user = User.create!(
   name: "Test",
   email: "test@test.com",
   password: "123123",
-  starting_balance: 350_000
+  starting_balance: 750_000
 )
 
 CATEGORIES = ["Food", "Health", "Commute", "Utilities", "Entertainment", "Others", "Income"]
@@ -37,7 +38,7 @@ DESCRIPTIONS = {
 
 TRANSACTION = ['expense', 'income']
 
-50.times do
+150.times do
   category = categories.sample
   title = category.title
 
@@ -46,8 +47,8 @@ TRANSACTION = ['expense', 'income']
     user: user,
     category: category,
     description: DESCRIPTIONS[title].sample,
-    amount: rand(300..12_000),
-    date: Faker::Date.between(from: 90.days.ago, to: Date.today),
+    amount: rand(300..8_000),
+    date: Faker::Date.between(from: 180.days.ago, to: Date.today),
     transaction_type: category.title == 'Income' ? 'income' : 'expense'
   )
 end
