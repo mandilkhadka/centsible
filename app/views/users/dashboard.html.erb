@@ -28,7 +28,7 @@
 <%# AI CHAT FORM %>
 
 <div id="chat_dashboard" class="box-size p-0">
-  <%= simple_form_for(@user_message) do |f| %>
+  <%= simple_form_for @user_message, html: { data: {turbo: false} } do |f| %>
     <div class="position-relative my-4">
       <%= f.input :content,
             as: :string,
@@ -43,8 +43,8 @@
       <% end %>
     </div>
   <% end %>
-
 </div>
+
 <%# CREATE TRANSACTION FORM %>
 <div id="create_transaction_form" class="box-size rounded-5 shadow-sm p-3 mb-4">
 
