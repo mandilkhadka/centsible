@@ -34,7 +34,7 @@
 <!-- | -->
 <!-- | -->
 <%# <div class="text-center mb-3"> %>
-  <%# <%= link_to "Add a Category", categories_path, class: "btn btn-primary d-grid gap-2 w-25 mx-auto rounded-5 text-white" %> %>
+  <%# <%= link_to "Add a Category", categories_path, class: "btn btn-primary d-grid gap-2 w-25 mx-auto rounded-5 text-white" %>
 <%# </div> %>
 <!-- | -->
 <!-- TRANSACTIONS LIST -->
@@ -58,7 +58,7 @@
           <div class="col-4 col-md-3">Category</div>
           <div class="col-2 col-md-2 text-end">Amount</div>
         </div>
-        <% @transactions.where( user_id: current_user.id ).select { |t| t.category&.title != "Income" }.each do |transaction| %>
+        <% @transactions.where( user_id: current_user.id ).order(created_at: :desc).select { |t| t.category&.title != "Income" }.each do |transaction| %>
           <div class="row align-items-center border-bottom py-2">
             <div class="col-2 col-md-2"><%= transaction.date %></div>
             <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
@@ -78,7 +78,7 @@
           <div class="col-4 col-md-3">Category</div>
           <div class="col-2 col-md-2 text-end">Amount</div>
         </div>
-        <% @transactions.where( user_id: current_user.id ).select { |t| t.category&.title == "Income" }.each do |transaction| %>
+        <% @transactions.where( user_id: current_user.id ).order(created_at: :desc).select { |t| t.category&.title == "Income" }.each do |transaction| %>
           <div class="row align-items-center border-bottom py-2">
             <div class="col-2 col-md-2"><%= transaction.date %></div>
             <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>

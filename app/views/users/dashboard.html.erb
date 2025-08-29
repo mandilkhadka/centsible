@@ -10,14 +10,15 @@
    <div class="fw-bold">Compared to last month</div>
    <div class="fs-3 fw-bold text-primary">
       <% unless current_user.transactions.total_expenses_until_same_day_last_month == 0 %>
-        <%= "#{current_user.transactions.percentage_compared_to_last_month.round(3)*100}%" %>
+        <% "#{@percentage_compare = current_user.transactions.percentage_compared_to_last_month.round(3)*100}%" %>
+        <%= "#{@percentage_compare.floor}%" %>
       <% else %>
         Not available yet
       <% end %>
    </div>
    <div>
       <% if current_user.transactions.total_expenses_until_same_day_last_month == 0 %>
-      
+
       <% elsif current_user.transactions.percentage_compared_to_last_month.positive? %>
         You are spending more than last month.
       <% else %>
