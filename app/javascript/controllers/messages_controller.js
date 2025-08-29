@@ -1,8 +1,15 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Connects to data-controller="messa
 export default class extends Controller {
   connect() {
-    this.scrollToBottom()
+    console.log(this)
+    setTimeout(() => {
+    this.scrollToBottom();
+    }, 150);
+    document.addEventListener("turbo:after-stream-append", this.scrollToBottom)
+  }
+
+  scrollToBottom = () => {
+    window.scrollTo(0, document.body.scrollHeight)
   }
 }
