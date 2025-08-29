@@ -29,7 +29,7 @@
 <!-- AI CHAT FORM -->
 <!-- | -->
 <div id="chat_dashboard" class="box-size p-0">
-  <%= simple_form_for(@user_message) do |f| %>
+  <%= simple_form_for @user_message, html: { data: {turbo: false} } do |f| %>
     <div class="position-relative my-4">
       <%= f.input :content,
             as: :string,
