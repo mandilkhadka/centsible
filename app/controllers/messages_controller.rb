@@ -22,8 +22,12 @@ class MessagesController < ApplicationController
         ),
         turbo_stream.append("messages",
           partial: "partials/message", locals: { message: @ai_message }
+        ),
+        turbo_stream.replace("chat_dashboard",
+          partial: "partials/chat_form", locals: { user_message: Message.new }
         )
       ]
+
     end
     format.html { redirect_to messages_path }
   end

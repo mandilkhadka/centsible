@@ -2,18 +2,14 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   connect() {
-    this.scrollToForm()
-    document.addEventListener("turbo:after-stream-append", this.scrollToForm)
+    console.log(this)
+    setTimeout(() => {
+    this.scrollToBottom();
+    }, 150);
+    document.addEventListener("turbo:after-stream-append", this.scrollToBottom)
   }
 
-  disconnect() {
-    document.removeEventListener("turbo:after-stream-append", this.scrollToForm)
-  }
-
-  scrollToForm = () => {
-    const form = document.getElementById("chat-form")
-    if (form) {
-      form.scrollIntoView({ behavior: "smooth", block: "nearest" })
-    }
+  scrollToBottom = () => {
+    window.scrollTo(0, document.body.scrollHeight)
   }
 }

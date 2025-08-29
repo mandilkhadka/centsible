@@ -1,5 +1,5 @@
 <div id="messages-container" data-controller="messages">
-  <div id="messages" class="box-size rounded-5 bg-white mb-4">
+  <div id="messages" class="box-size rounded-5 bg-white mb-2 pb-1">
     <% @messages.each do |message| %>
       <% if message.role == "user" %>
         <div class="d-flex justify-content-end mb-2">
@@ -17,21 +17,5 @@
     <% end %>
   </div>
 </div>
-
-<div id="chat_dashboard" class="box-size p-0">
-  <%= simple_form_for(@user_message) do |f| %>
-    <div class="position-relative my-4">
-      <%= f.input :content,
-            as: :string,
-            placeholder: "Message..",
-            required: true,
-            label: false,
-            input_html: { class: "form-control rounded-pill pe-5 bg-white" } %>
-
-      <!-- Send button inside the input -->
-      <%= f.button :button, class: "btn btn-success rounded-circle position-absolute end-0 top-50 translate-middle-y me-2" do %>
-        <i class="fa-solid fa-arrow-up text-white"></i>
-      <% end %>
-    </div>
-  <% end %>
+<%= render partial: "partials/chat_form", locals: { user_message: @user_message } %>
 </div>
