@@ -2,7 +2,7 @@ class Transaction < ApplicationRecord
   belongs_to :user
   belongs_to :category
 
-  validates :amount, presence: true, numericality: { greater_than: 0}
+  validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :description, presence: true
 
   def self.total_expenses_from_start_of_month
