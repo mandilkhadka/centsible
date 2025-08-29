@@ -14,7 +14,7 @@ user = User.create!(
   starting_balance: 750_000
 )
 
-CATEGORIES = ["Food", "Health", "Commute", "Utilities", "Entertainment", "Others", "Income"]
+CATEGORIES = ["Food", "Health", "Commute", "Utilities", "Entertainment", "Others"]
 
 puts "Creating categories…"
 categories = CATEGORIES.map do |title|
@@ -33,7 +33,6 @@ DESCRIPTIONS = {
   "Utilities"     => ["Electric bill", "Water bill", "Gas bill", "Mobile plan", "Home internet"],
   "Entertainment" => ["Cinema", "Arcade", "Concert ticket", "Streaming sub", "Karaoke"],
   "Others"        => ["Stationery", "Gift", "Home goods", "Random purchase", "Household"],
-  "Income"        => ["Income"]
 }
 
 TRANSACTION = ['expense', 'income']
