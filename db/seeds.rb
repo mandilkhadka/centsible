@@ -19,7 +19,7 @@ puts "Creating categories…"
 categories = CATEGORIES.map do |title|
   user.categories.create!(
     title: title,
-    limit: rand(50_000..60_000)
+    limit: rand(50_000..100_000)
   )
 end
 

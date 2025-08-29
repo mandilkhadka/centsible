@@ -35,7 +35,11 @@
             <%# color displaying on the container small %>
             <!-- Right side: total sum -->
             <div class="d-flex ms-auto">
-              <span>¥<%= category_total %></span>
+              <p>¥<%= category_total %></p>
+              <%# showing the limit %>
+              <% if category.limit.present? %>
+                <span><strong>/</strong>¥<%= category.limit%></span>
+              <% end %>
             </div>
           </button>
         </h5>
@@ -66,7 +70,7 @@
       <%= simple_form_for @category do |f| %>
         <%= f.input :title %>
         <%= f.input :limit, as: :integer, step: 1000,  placeholder: "Set your Monthly Budget(Optional)", label: false, input_html: { min: "0" } %>
-        <%= f.button :submit, class: "btn btn-primary" %>
+        <%= f.submit %>
       <% end %>
     </div>
   </div>
