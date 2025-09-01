@@ -13,6 +13,8 @@ class TransactionsController < ApplicationController
     @transaction.user = current_user
     # budget
     @category_totals = current_user.transactions.joins(:category).group("categories.title").sum(:amount)
+    spent = @category_totals[@transaction.category.title]
+    budget = @transaction.category.limit
     # budget
 
     # Filtering if it is income or expense
@@ -23,9 +25,12 @@ class TransactionsController < ApplicationController
     # Transaction saving
     if @transaction.save
       # Budget
-      if @category_totals[@transaction.category.title]  >= @transaction.category.limit
+
+      if spent && budget >= budget
         flash[:alert] = "You have reached your monthly budget limit for #{@transaction.category.title}."
       end
+
+
     redirect_to transactions_path
     else
       @transactions = current_user.transactions.order(created_at: :desc)

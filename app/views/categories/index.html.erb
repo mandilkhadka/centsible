@@ -15,6 +15,7 @@
   <% filtered_totals = @category_totals.reject { |title, _| title == "Income" } %>
   <%= pie_chart filtered_totals, colors: category_colors.values, library: { pieSliceText: 'value' } %>
 </div>
+
 <%# Transactions by Category - Collapsible Cards %>
 <div class="box-size">
   <% @transactions.each_with_index do |(category, transactions), index| %>
@@ -35,11 +36,15 @@
             <%# color displaying on the container small %>
             <!-- Right side: total sum -->
             <div class="d-flex ms-auto">
-              <p>¥<%= category_total %></p>
+              <%# color the text if it is over the budget or below the budget  %>
+      <% if category_total >= category.limit %>
+
+              <p class="text-danger">¥<%= category_total %></p>
               <%# showing the limit %>
-              <% if category.limit.present? %>
-                <span><strong>/</strong>¥<%= category.limit%></span>
+              <% else %>
+              <p class="text-success">¥<%= category_total %></p>
               <% end %>
+
             </div>
           </button>
         </h5>
@@ -74,6 +79,8 @@
         <%= f.submit %>
       <% end %>
     </div>
+
+
   </div>
 </div>
 <%# NAV BAR %>
