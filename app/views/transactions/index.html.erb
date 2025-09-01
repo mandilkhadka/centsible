@@ -34,7 +34,7 @@
 <!-- | -->
 <!-- | -->
 <%# <div class="text-center mb-3"> %>
-  <%# <%= link_to "Add a Category", categories_path, class: "btn btn-primary d-grid gap-2 w-25 mx-auto rounded-5 text-white" %>
+<%# <%= link_to "Add a Category", categories_path, class: "btn btn-primary d-grid gap-2 w-25 mx-auto rounded-5 text-white" %>
 <%# </div> %>
 <!-- | -->
 <!-- TRANSACTIONS LIST -->
@@ -50,41 +50,63 @@
     </li>
   </ul>
   <div class="tab-content" id="myTabContent">
+    <!-- Expense tab -->
     <div class="tab-pane fade py-3 show active" id="bookings-tab-pane" role="tabpanel" aria-labelledby="bookings-tab" tabindex="0">
       <div class="container px-0">
-        <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
-          <div class="col-2 col-md-2">Date</div>
-          <div class="col-4 col-md-5">Description</div>
-          <div class="col-4 col-md-3">Category</div>
-          <div class="col-2 col-md-2 text-end">Amount</div>
+        <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2 align-items-center justify-content-between">
+          <div class="col-4 text-start">
+            <div>Transaction</div>
+          </div>
+          <div class="col-4 text-start">
+            <div>Category</div>
+          </div>
+          <div class="col-4 text-end">
+            <div>Amount</div>
+          </div>
         </div>
-        <% @transactions.where( user_id: current_user.id ).order(created_at: :desc).select { |t| t.category&.title != "Income" }.each do |transaction| %>
-          <div class="row align-items-center border-bottom py-2">
-            <div class="col-2 col-md-2"><%= transaction.date %></div>
-            <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
-            <div class="col-4 col-md-3"><%= transaction.category&.title %></div>
-            <div class="col-2 col-md-2 text-end <%= transaction.amount.to_f < 0 ? 'text-danger' : 'text-success' %>">
-              <%= "¥#{transaction.amount}" %>
+        <% @transactions.where(user_id: current_user.id).order(created_at: :desc).select { |t| t.category&.title != "Income" }.each do |transaction| %>
+          <div class="row align-items-center border-bottom py-2 align-items-center justify-content-between">
+            <div class="col-4 d-flex flex-column">
+              <div class="text-light-grey"><%= transaction.date %></div>
+              <div><%= transaction.description %></div>
+            </div>
+            <div class="col-4">
+              <div><%= transaction.category&.title %></div>
+            </div>
+            <div class="col-4 text-end">
+              <div class=" <%= transaction.amount.to_f < 0 ? 'text-danger' : 'text-success' %>">
+                <%= "¥#{transaction.amount}" %>
+              </div>
             </div>
           </div>
         <% end %>
       </div>
     </div>
+    <!-- Income tab -->
     <div class="tab-pane fade py-3" id="requests-tab-pane" role="tabpanel" aria-labelledby="requests-tab" tabindex="0">
       <div class="container px-0">
         <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
-          <div class="col-2 col-md-2">Date</div>
-          <div class="col-4 col-md-5">Description</div>
-          <div class="col-4 col-md-3">Category</div>
-          <div class="col-2 col-md-2 text-end">Amount</div>
+          <div class="col-4 text-center">
+            <div class="text-justify">Date / Description</div>
+          </div>
+          <div class="col-4 text-center">
+            <div class="text-justify">Category</div>
+          </div>
+          <div class="col-4 text-center">
+            <div class="text-justify">Amount</div>
+          </div>
         </div>
-        <% @transactions.where( user_id: current_user.id ).order(created_at: :desc).select { |t| t.category&.title == "Income" }.each do |transaction| %>
+        <% @transactions.where(user_id: current_user.id).order(created_at: :desc).select { |t| t.category&.title == "Income" }.each do |transaction| %>
           <div class="row align-items-center border-bottom py-2">
-            <div class="col-2 col-md-2"><%= transaction.date %></div>
-            <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
-            <div class="col-4 col-md-3"><%= transaction.category&.title %></div>
-            <div class="col-2 col-md-2 text-end text-success <%= transaction.amount.to_f < 0 %>">
-              <%= "¥#{transaction.amount}" %>
+            <div class="col-4 d-flex flex-column text-center">
+              <div class="text-justify"><%= transaction.date %></div>
+              <div class="text-justify"><%= transaction.description %></div>
+            </div>
+            <div class="col-4 text-center">
+              <div class="text-justify"><%= transaction.category&.title %></div>
+            </div>
+            <div class="col-4 text-center">
+              <div class="text-justify text-success"><%= "¥#{transaction.amount}" %></div>
             </div>
           </div>
         <% end %>
