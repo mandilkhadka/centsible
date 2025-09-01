@@ -15,6 +15,10 @@ class CategoriesController < ApplicationController
     end
   end
 
+  def budget
+    @categories = Category.all
+  end
+
   private
 
   def category_params

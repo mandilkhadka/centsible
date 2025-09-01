@@ -18,4 +18,5 @@ Rails.application.routes.draw do
   resources :messages, only: [:index, :new, :create]
   resources :categories, only: [:index, :new, :create]
 
+  get "budget", to: "categories#budget"
 end
