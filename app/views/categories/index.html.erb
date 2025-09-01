@@ -16,7 +16,16 @@
   <%= pie_chart filtered_totals.sort_by { |_, value| -value}, colors: category_colors.values, library: { pieSliceText: 'value' } %>
 </div>
 
-<%# Sorting the categories %>
+<%# Sorting by months %>
+<p class="box-size mb-2">
+  Sort by:
+  <%= link_to "This month",     categories_path(range: "this_month"),     class: (@range == "this_month" ? "fw-bold" : "") %> |
+  <%= link_to "Last month",     categories_path(range: "last_month"),     class: (@range == "last_month" ? "fw-bold" : "") %> |
+  <%= link_to "Last 6 months",  categories_path(range: "last_6_months"),  class: (@range == "last_6_months" ? "fw-bold" : "") %> |
+  <%= link_to "Total",          categories_path(range: "total"),          class: (@range == "total" ? "fw-bold" : "") %>
+</p>
+
+<%# Sorting the categories by amount %>
 <% sorted_transactions = @transactions.reject { |category, transactions| category.title == "Income" || transactions.empty? }.sort_by { |category, transactions| -transactions.sum(&:amount) } %>
 <%# Sorting the categories %>
 
