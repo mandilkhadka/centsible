@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :categories
   has_many :messages
   has_many :transactions
+  has_many :savings
 
   # validates :name, presence: true
   # validates :starting_balance, numericality: { only_integer: true }

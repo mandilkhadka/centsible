@@ -2,6 +2,7 @@
 class Transaction < ApplicationRecord
   belongs_to :user
   belongs_to :category
+  belongs_to :saving, optional: true
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :description, presence: true
