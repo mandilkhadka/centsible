@@ -17,7 +17,11 @@ Rails.application.routes.draw do
   resources :users, only: [:show, :edit, :update]
   resources :messages, only: [:index, :new, :create]
   resources :categories, only: [:index, :new, :create]
+    resources :savings, only: [:index, :create] do
+    # POST /savings/:id/deposits to add money into a saving (creates an expense transaction)
+    post :deposits, on: :member
+  end
 
   get "budget", to: "categories#budget"
-  get "saving", to: "categories#saving"
+
 end
