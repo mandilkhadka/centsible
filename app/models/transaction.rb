@@ -5,6 +5,17 @@ class Transaction < ApplicationRecord
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :description, presence: true
 
+  # Scopes so we can sort out the categories and transactions indexes
+  scope :this_month,     -> { where(date: Time.zone.today.beginning_of_month..Time.zone.today.end_of_month) }
+  scope :last_month,     -> {
+    start = Time.zone.today.last_month.beginning_of_month
+    finish = Time.zone.today.last_month.end_of_month
+    where(date: start..finish)
+  }
+  scope :last_6_months,  -> { where(date: 5.months.ago.beginning_of_month..Time.zone.today.end_of_month) }
+  scope :all_time,       -> { all }
+
+
   def self.total_expenses_from_start_of_month
     Transaction.where(transaction_type: "expense").where(date: (Date.current.beginning_of_month)..Date.current).sum(:amount)
   end
