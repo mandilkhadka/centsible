@@ -6,14 +6,14 @@ class TextTransactionMakerTool < RubyLLM::Tool
     @categories_tool = categories_tool
   end
 
-  def execute(attrs)
-    attrs = attrs.transform_keys(&:to_sym)
+  def execute(details)
+    details = details.transform_keys(&:to_sym)
 
-    if attrs[:category].nil? || attrs[:category].is_a?(String)
-      attrs[:category] = @categories_tool.execute(description: attrs[:description])
+    if details[:category].nil? || details[:category].is_a?(String)
+      details[:category] = @categories_tool.execute(description: details[:description])
     end
 
-    tx = @user.transactions.new(attrs)
-    tx.save!
+    transaction = @user.transactions.new(details)
+    transaction.save!
   end
 end
