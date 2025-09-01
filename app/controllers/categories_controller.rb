@@ -42,20 +42,20 @@ class CategoriesController < ApplicationController
     @category_totals = filtered.joins(:category).group("categories.title").sum(:amount)
   end
 
-#   def edit
-#     @category = Category.find(params[:id])
-#   end
+  def edit
+    @category = Category.find(params[:id])
+  end
 
-# def update
-#   @category = Category.find(params[:id])
+def update
+  @category = Category.find(params[:id])
 
 
-#   if @category.update(category_params)
-#     redirect_to categories_path, notice: "Category limit updated!"
-#   else
-#     redirect_to categories_path, alert: "Failed to update category limit."
-#   end
-# end
+  if @category.update(category_params)
+    redirect_to budget_path, notice: "Category limit updated!"
+  else
+    render "edit", alert: "Failed to update category limit."
+  end
+end
 
   private
 

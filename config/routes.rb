@@ -19,5 +19,6 @@ Rails.application.routes.draw do
   resources :categories, only: [:index, :new, :create, :edit]
 
   get "budget", to: "categories#budget"
-
+  get "budget", to: "categories#edit"
+  patch "budget", to: "categories#update"
 end
