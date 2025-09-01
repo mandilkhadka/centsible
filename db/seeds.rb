@@ -38,7 +38,7 @@ DESCRIPTIONS = {
 
 TRANSACTION = ['expense', 'income']
 
-150.times do
+20.times do
   category = categories.sample
   title = category.title
 

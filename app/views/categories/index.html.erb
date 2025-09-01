@@ -13,7 +13,7 @@
 <%# NAV BAR %>
 <div class="box-size">
   <% filtered_totals = @category_totals.reject { |title, _| title == "Income" } %>
-  <%= pie_chart filtered_totals.sort_by { |_, value| -value}, colors: category_colors.values, library: { pieSliceText: 'value' } %>
+  <%= pie_chart filtered_totals, colors: category_colors.values, library: { pieSliceText: 'value' } %>
 </div>
 
 <%# Sorting by months %>
