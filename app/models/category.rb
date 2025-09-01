@@ -23,4 +23,13 @@ class Category < ApplicationRecord
   
   validates :title, presence: true
   validates :limit, numericality: { only_integer: true }, allow_nil: true
+
+  before_validation :capitalize_title
+
+  private
+
+  def capitalize_title
+    return if title.blank?
+    self.title = title.strip.capitalize
+  end
 end

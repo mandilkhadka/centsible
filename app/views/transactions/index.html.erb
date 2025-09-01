@@ -12,19 +12,22 @@
 <div id="dashboard_stats_container" class="d-flex flex-row transactions custom box-size p-0 gap-3 mb-5">
   <div id="last_month_comparison_stat" class="flex-fill rounded-5 shadow-sm p-3 stats_background bg-primary text-white">
     <div class="row g-3">
-      <!-- Top: Available Balance (full width) -->
       <div class="col-12 text-center">
         <div class="fw-bold fs-3">Available Balance:</div>
         <div class="fs-1 fw-bold">
           <%= number_to_currency(@available_balance, unit: "¥", precision: 0, delimiter: ",") %>
         </div>
       </div>
-      <!-- Bottom: two columns side-by-side -->
       <div class="col-6">
-        <div class="fw-bold">Total Income: <%= number_to_currency(@total_income, unit: "¥", precision: 0, delimiter: ",") %></div>
+        <div class="fw-bold">
+          Total Income: </div>
+        <div class="fs-3 fw-bold">
+          <%= number_to_currency(@total_income, unit: "¥", precision: 0, delimiter: ",") %>
+        </div>
       </div>
       <div class="col-6 text-end">
-        <div class="fw-bold">Total Spent: <%= number_to_currency(@total_spent, unit: "¥", precision: 0, delimiter: ",") %></div>
+        <div class="fw-bold"><%= range_text(@range) %></div>
+        <div class="fs-3 fw-bold"><%= number_to_currency(@total_spent, unit: "¥", precision: 0, delimiter: ",") %></div>
       </div>
     </div>
   </div>
@@ -36,7 +39,6 @@
 <%# <div class="text-center mb-3"> %>
 <%# <%= link_to "Add a Category", categories_path, class: "btn btn-primary d-grid gap-2 w-25 mx-auto rounded-5 text-white" %>
 <%# </div> %>
-
 <!-- | -->
 <!-- SORTING OPTIONS -->
 <!-- | -->

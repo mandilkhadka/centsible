@@ -1,4 +1,4 @@
-<div class="navbar navbar-expand-sm navbar-light footer w-100">
+<div class="navbar navbar-expand-sm navbar-light footer w-100 fixed-bottom" data-scroll-nav-target="bottom">
   <footer class="footer-content d-flex w-100 justify-content-between">
     <div class="nav-item">
       <%= link_to root_path, class: "nav-link d-flex flex-column align-items-center" do %>
@@ -21,7 +21,7 @@
     <div class="nav-item">
       <%= link_to messages_path, class: "nav-link d-flex flex-column align-items-center" do %>
         <i class="fa-solid fa-comment-dots icon <%= current_page?(messages_path) ? 'green' : '' %>" style="color: #828282;"></i>
-        <h5 class="icon-text">Chat with Centsi</h5>
+        <h5 class="icon-text">Chat with Centi</h5>
       <% end %>
     </footer>
   </div>
