@@ -1,0 +1,74 @@
+<%# HEADER PARTIAL %>
+<div class="box-size">
+  <h2>Budget</h2>
+</div>
+<%# HEADER PARTIAL %>
+<%# Define current month's date range %>
+<% start_of_month = Date.current.beginning_of_month %>
+<% end_of_month = Date.current.end_of_month %>
+<%# Prepare colors for categories excluding "Income" %>
+<% category_colors = {} %>
+<% @category_totals.each_with_index do |(title, _), index| %>
+  <% next if title == "Income" %>
+  <% category_colors[title] = Category::COLORS[index] %>
+<% end %>
+<%# Filter transactions by date range (this month only) %>
+<% filtered_transactions = @transactions.transform_values do |transactions| %>
+  <%transactions.select { |t| t.date >= start_of_month && t.date <= end_of_month }%>
+<% end %>
+<%# Sort categories by total amount spent this month (excluding Income and empty) %>
+<% sorted_transactions = filtered_transactions.reject { |category, transactions| category.title == "Income" || transactions.empty? }
+                                              .sort_by { |category, transactions| -transactions.sum(&:amount) } %>
+<div class="box-size">
+  <% sorted_transactions.each do |(category, transactions)| %>
+    <% next if category.title == "Income" || transactions.empty? %>
+    <% total = transactions.sum(&:amount) %>
+    <% limit = category.limit %>
+    <% bar_color = category_colors[category.title] || "#007bff" %>
+    <div class="mb-4 p-3 bg-white rounded-4 shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <div class="d-flex align-items-center">
+          <div class="me-2">
+            <i class="fa fa-circle" style="color: <%= bar_color %>;"></i>
+          </div>
+          <strong><%= category.title %></strong>
+        </div>
+        <% if limit.present? %>
+          <div class="text-muted">Limit – ¥<%= number_with_delimiter(limit) %></div>
+        <% else %>
+          <div class="text-muted fst-italic text-secondary">No limit set</div>
+        <% end %>
+      </div>
+      <% if limit.present? %>
+        <% remaining = [limit - total, 0].max %>
+        <% percentage = [(total.to_f / limit) * 100, 100].min %>
+        <div class="progress" style="height: 10px;">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            style="width: <%= percentage %>%; background-color: <%= bar_color %>;"
+            aria-valuenow="<%= percentage %>"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+        </div>
+        <div class="d-flex justify-content-between mt-1 small text-muted">
+          <% if total >= limit %>
+            <div style="color: #FF5733">Total spent – ¥<%= number_with_delimiter(total) %></div>
+          <% else %>
+            <div class="text-primary">Total spent – ¥<%= number_with_delimiter(total) %></div>
+          <% end %>
+          <div>Remaining – ¥<%= number_with_delimiter(remaining) %></div>
+        </div>
+      <% else %>
+        <div class="mt-1 small text-muted">
+          <span class="text-primary">Total spent – ¥<%= number_with_delimiter(total) %></span>
+        </div>
+        <%# not working update %>
+        <% if limit.nil? %>
+          <%= link_to "Set a budget limit", budget_path %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
