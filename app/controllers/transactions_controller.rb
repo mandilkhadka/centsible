@@ -1,34 +1,12 @@
 class TransactionsController < ApplicationController
-# app/controllers/transactions_controller.rb
   def index
-    @range = params[:range].presence || "this_month"
-
-    base = current_user.transactions.includes(:category)
-
-    filtered = case @range
-              when "this_month"    then base.this_month
-              when "last_month"    then base.last_month
-              when "last_6_months" then base.last_6_months
-              when "total"         then base.all_time
-              else                     base.this_month
-              end
-
-    @transactions_expense = filtered
-                              .joins(:category)
-                              .where.not(categories: { title: "Income" })
-                              .order(date: :desc, id: :desc)
-
-    @transactions_income  = filtered
-                              .joins(:category)
-                              .where(categories: { title: "Income" })
-                              .order(date: :desc, id: :desc)
-
-    # Header numbers (filtered):
-    @total_income = @transactions_income.sum(:amount)
-    @total_spent  = @transactions_expense.sum(:amount)
-    @available_balance = current_user.starting_balance + @total_income - @total_spent
+    @transactions = Transaction.all
+    # Sorting it out in html file
+    @transactions = Transaction.order(date: :desc)
+    @total_income = current_user.total_income
+    @total_spent = current_user.total_spent
+    @available_balance = current_user.available_balance
   end
-
 
   def create
     @transaction = Transaction.new(transactions_params)
@@ -52,8 +30,7 @@ class TransactionsController < ApplicationController
         flash[:alert] = "You have reached your monthly budget limit for #{@transaction.category.title}."
       end
 
-
-    redirect_to transactions_path
+      redirect_to transactions_path
     else
       @transactions = current_user.transactions.order(created_at: :desc)
       @categories   = current_user.categories
