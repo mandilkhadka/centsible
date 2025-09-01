@@ -5,7 +5,7 @@ module ApplicationHelper
   markdown.render(text).html_safe
   end
 
-  def spent_label(range_key)
+  def range_text(range_key)
     {
       "this_month"     => "Spent this month:",
       "last_month"     => "Spent last month:",
