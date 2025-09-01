@@ -30,8 +30,37 @@ class CategoriesController < ApplicationController
   end
 
   def budget
-    @categories = Category.all
+    @category = Category.new
+
+    base = current_user.transactions
+    @range = params[:range].presence || "this_month"
+
+    filtered = case @range
+            when "this_month"    then base.this_month
+            when "last_month"    then base.last_month
+            when "last_6_months" then base.last_6_months
+            when "total"         then base.all_time
+            else                     base.this_month
+            end
+
+    @transactions    = filtered.includes(:category).group_by(&:category)
+    @category_totals = filtered.joins(:category).group("categories.title").sum(:amount)
   end
+
+#   def edit
+#     @category = Category.find(params[:id])
+#   end
+
+# def update
+#   @category = Category.find(params[:id])
+
+
+#   if @category.update(category_params)
+#     redirect_to categories_path, notice: "Category limit updated!"
+#   else
+#     redirect_to categories_path, alert: "Failed to update category limit."
+#   end
+# end
 
   private
 

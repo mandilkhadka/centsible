@@ -1,0 +1,112 @@
+
+<%# HEADER PARTIAL %>
+<div class="box-size">
+  <%= render "users/balance_box" %>
+</div>
+<%# HEADER PARTIAL %>
+<%# making colors same to piechart and the dropdown  %>
+<% category_colors = {} %>
+<% @category_totals.each_with_index do |(title, _), index| %>
+  <% next if title == "Income" %>
+  <% category_colors[title] = Category::COLORS[index] %>
+<% end %>
+<%# making colors same to piechart and the dropdown  %>
+<%# NAV BAR %>
+<div class="box-size">
+  <% filtered_totals = @category_totals.reject { |title, _| title == "Income" } %>
+  <%= pie_chart filtered_totals.sort_by { |_, value| -value}, colors: category_colors.values, library: { pieSliceText: 'value' } %>
+</div>
+
+<%# Sorting by months %>
+<p class="box-size mb-2">
+  Sort by:
+  <%= link_to "This month",     categories_path(range: "this_month"),     class: (@range == "this_month" ? "fw-bold" : "") %> |
+  <%= link_to "Last month",     categories_path(range: "last_month"),     class: (@range == "last_month" ? "fw-bold" : "") %> |
+  <%= link_to "Last 6 months",  categories_path(range: "last_6_months"),  class: (@range == "last_6_months" ? "fw-bold" : "") %> |
+  <%= link_to "Total",          categories_path(range: "total"),          class: (@range == "total" ? "fw-bold" : "") %>
+</p>
+
+<%# Sorting the categories by amount %>
+<% sorted_transactions = @transactions.reject { |category, transactions| category.title == "Income" || transactions.empty? }.sort_by { |category, transactions| -transactions.sum(&:amount) } %>
+<%# Sorting the categories %>
+
+<%# Category budget %>
+<div class="box-size">
+  <% sorted_transactions.each_with_index do |(category, transactions), index| %>
+    <% next if category.title == "Income" || transactions.empty? %>
+    <% category_total = transactions.sum(&:amount) %>
+    <div class="card mb-2 rounded-4">
+      <div class="card-header rounded-3" id="heading-<%= category.id %>">
+        <h5 class="mb-0">
+          <button class="btn text-dark text-decoration-none d-flex justify-content-between align-items-center w-100 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<%= category.id %>" aria-expanded="false" aria-controls="collapse-<%= category.id %>">
+            <%# Checkbox-style box color  %>
+            <div class="me-2 mt-1" style="width: 20px; height: 20px; background-color: <%= category_colors[category.title] %>; border: 1px solid #ccc; border-radius: 4px;"></div>
+            <%# Checkbox-style box color  %>
+            <!-- Left side: icon -->
+            <span class="me-2" ><i class="fa-solid fa-angles-down fa-xs"></i></span>
+            <span class="me-2"><strong><%= category.title %></strong></span>
+            <%# color displaying on the container small %>
+            <%# <p class="text-secondary text-opacity-25" style="background-color: = category_colors[category.title]"> ______ </p> %>
+            <%# color displaying on the container small %>
+            <!-- Right side: total sum -->
+            <div class="d-flex ms-auto">
+              <%# color the text if it is over the budget or below the budget  %>
+      <% if category_total >= category.limit %>
+
+              <p style="color: #FF5733;">¥<%= category_total %></p>
+              <%# showing the limit %>
+              <% else %>
+              <p class="text-primary">¥<%= category_total %></p>
+              <% end %>
+
+            </div>
+            <h5>/<%= category.limit %></h5>
+          </button>
+        </h5>
+      </div>
+
+    </div>
+  <% end %>
+</div>
+<% sorted_transactions.each do |(category, transactions)| %>
+  <% next if category.title == "Income" || transactions.empty? %>
+  <% total = transactions.sum(&:amount) %>
+  <% limit = category.limit %>
+  <% remaining = [limit - total, 0].max %>
+  <% percentage = [(total.to_f / limit) * 100, 100].min %>
+  <% bar_color = category_colors[category.title] || "#007bff" %>
+
+  <div class="mb-4 p-3 bg-white rounded shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <div class="d-flex align-items-center">
+<%# icon %>
+        <div class="me-2">
+          <i class="fa fa-circle" style="color: <%= bar_color %>;"></i>
+        </div>
+        <strong><%= category.title %></strong>
+      </div>
+      <div class="text-muted">Limit- ¥<%= number_with_delimiter(limit) %></div>
+    </div>
+
+    <div class="progress" style="height: 10px;">
+      <div
+        class="progress-bar"
+        role="progressbar"
+        style="width: <%= percentage %>%; background-color: <%= bar_color %>;"
+        aria-valuenow="<%= percentage %>"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      ></div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-1 small text-muted">
+<% if total >= limit %>
+      <div style="color: #FF5733">Total spent- ¥<%= number_with_delimiter(total) %></div>
+      <% else %>
+      <div class="text-primary">Total spent- ¥<%= number_with_delimiter(total) %></div>
+<% end %>
+
+      <div>Remaining- ¥<%= number_with_delimiter(remaining) %></div>
+    </div>
+  </div>
+<% end %>
