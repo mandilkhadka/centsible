@@ -9,7 +9,7 @@
   <div class="offcanvas-body small">
 
     <%= simple_form_for @category do |f| %>
-      <%#= f.input :category_id, collection: Category.where.not(title: "Income").pluck(:title, :id), prompt: "Select a Category", label: false, input_html: { class: "my-4" } %>
+      <%#= f.input :title, collection: Category.where.not(title: "Income").pluck(:title, :id), prompt: "Select a Category", label: false, input_html: { class: "my-4" } %>
       <%= f.input :limit, as: :integer, step: 1000, placeholder: "Set your Monthly Budget(Optional)", label: false, input_html: { min: "0" } %>
       <%= f.submit "Set Category limit" %>
     <% end %>

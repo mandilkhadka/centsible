@@ -30,10 +30,11 @@ class TransactionsController < ApplicationController
         budget = @transaction.category.limit
 
         spent = @category_totals[@transaction.category.title] || 0
+        if budget.present?
           if spent + @transaction.amount >= budget
             flash[:alert] = "You have reached your monthly budget limit for #{@transaction.category.title}."
           end
-
+        end
       end
 
       redirect_to transactions_path

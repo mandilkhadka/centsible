@@ -50,6 +50,7 @@
             <!-- Right side: total sum -->
             <div class="d-flex ms-auto">
               <%# color the text if it is over the budget or below the budget  %>
+<% if category.limit? %>
       <% if category_total >= category.limit %>
 
               <p style="color: #FF5733;">¥<%= category_total %></p>
@@ -57,6 +58,8 @@
               <% else %>
               <p class="text-primary">¥<%= category_total %></p>
               <% end %>
+              <% end %>
+
 
             </div>
           </button>
@@ -79,4 +82,23 @@
   </div>
 </div>
 <%# NAV BAR %>
+</div>
+<div class="w-100 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLimit" aria-controls="offcanvasLimit">
+  <h2>Set category limit <i class="fa-solid fa-circle-plus fa-xl" style="color: #99bc85;"></i></h2>
+</div>
+
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasLimit" aria-labelledby="offcanvasLimitLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasLimitLabel">Set Category Limit</h5>
+  </div>
+  <div class="offcanvas-body small">
+
+
+      <%= simple_form_for @category do |f| %>
+        <%= f.input :title %>
+        <%= f.input :limit, as: :integer, step: 1000,  placeholder: "Set your Monthly Budget(Optional)", label: false, input_html: { min: "0" } %>
+        <%= f.submit %>
+
+      <% end %>
+  </div>
 </div>

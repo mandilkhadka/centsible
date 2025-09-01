@@ -23,6 +23,7 @@ user = User.create!(
 CATEGORIES = ["Income", "Food", "Health", "Commute", "Utilities", "Entertainment", "Others"]
 categories_by_title = CATEGORIES.index_with { |title| user.categories.create!(title: title) }
 
+
 def add_txn!(user:, categories_by_title:, title:, description:, amount_yen:, date:, type: nil)
   type ||= (title == "Income" ? "income" : "expense")
   Transaction.create!(
