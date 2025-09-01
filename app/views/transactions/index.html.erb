@@ -1,46 +1,58 @@
-
-<%# Header  %>
+<!-- TITLE -->
+<!-- | -->
 <div class="box-size">
   <div id="header">
     <h2 class="d-flex">Transactions </h2>
   </div>
 </div>
-<div id="dashboard_stats_container"
-    class="d-flex flex-row transactions custom box-size p-0 gap-3 mb-5">
-  <div id="last_month_comparison_stat"
-      class="flex-fill rounded-5 shadow-sm p-3 stats_background">
-    <%# Total balance %>
-    <div class="fw-bold">Available Balance: </div>
-    <div class="fs-3 fw-bold text-success">
-      <%= "¥ #{@available_balance}" %>
-    </div>
-    <%# Total Income %>
-    <div class="fw-bold text-end">Total Income:
-      <div class="fs-3 fw-bold text-success">
-        <%= "¥#{@total_income}" %>
+<!-- | -->
+<!-- BALANCE BOX -->
+<!-- | -->
+<!-- | -->
+<div id="dashboard_stats_container" class="d-flex flex-row transactions custom box-size p-0 gap-3 mb-5">
+  <div id="last_month_comparison_stat" class="flex-fill rounded-5 shadow-sm p-3 stats_background bg-primary text-white">
+    <div class="row g-3">
+      <!-- Top: Available Balance (full width) -->
+      <div class="col-12 text-center">
+        <div class="fw-bold fs-3">Available Balance:</div>
+        <div class="fs-1 fw-bold">
+          <%= number_to_currency(@available_balance, unit: "¥", precision: 0, delimiter: ",") %>
+        </div>
       </div>
-    </div>
-
-    <%# Total Spent %>
-    <div class="fw-bold text-end">Total Spent:
-      <div class="fs-3 fw-bold text-danger">
-        <%= "¥#{@total_spent}" %>
+      <!-- Bottom: two columns side-by-side -->
+      <div class="col-6">
+        <div class="fw-bold">Total Income: <%= number_to_currency(@total_income, unit: "¥", precision: 0, delimiter: ",") %></div>
+      </div>
+      <div class="col-6 text-end">
+        <div class="fw-bold">Total Spent: <%= number_to_currency(@total_spent, unit: "¥", precision: 0, delimiter: ",") %></div>
       </div>
     </div>
   </div>
-
 </div>
-<%# /// Categories Button // %>
-<div class="box-size transactions custom rounded-5 mb-5 shadow-sm p-3 stats_background">
-  <div class="text-center">
-    <%= link_to "Categories", categories_path, class: "btn btn-primary d-grid gap-2 col-6 mx-auto rounded-lg" %>
-  </div>
+<!-- | -->
+<!-- Add new Category button -->
+<!-- | -->
+<!-- | -->
+<%# <div class="text-center mb-3"> %>
+  <%# <%= link_to "Add a Category", categories_path, class: "btn btn-primary d-grid gap-2 w-25 mx-auto rounded-5 text-white" %>
+<%# </div> %>
 
-</div>
-<%# CREATE TRANSACTION FORM %>
-
-<div class="box-size transactions custom rounded-5 shadow-sm p-3 stats_background mb-2">
-
+<!-- | -->
+<!-- SORTING OPTIONS -->
+<!-- | -->
+<!-- | -->
+<p class="box-size mb-2">
+  Sort by:
+  <%= link_to "This month",     transactions_path(range: "this_month"),     class: (@range == "this_month" ? "fw-bold" : "") %> |
+  <%= link_to "Last month",     transactions_path(range: "last_month"),     class: (@range == "last_month" ? "fw-bold" : "") %> |
+  <%= link_to "Last 6 months",  transactions_path(range: "last_6_months"),  class: (@range == "last_6_months" ? "fw-bold" : "") %> |
+  <%= link_to "Total",          transactions_path(range: "total"),          class: (@range == "total" ? "fw-bold" : "") %>
+</p>
+<!-- | -->
+<!-- TRANSACTIONS LIST -->
+<!-- | -->
+<!-- | -->
+<div class="box-size transactions custom rounded-5 shadow-sm p-3 mb-2 bg-secondary">
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <span class="nav-link tab-underlined active" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings-tab-pane" role="tab" aria-controls="bookings-tab-pane" aria-selected="true">Expense</span>
@@ -52,16 +64,13 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade py-3 show active" id="bookings-tab-pane" role="tabpanel" aria-labelledby="bookings-tab" tabindex="0">
       <div class="container px-0">
-
-      <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
-        <div class="col-2 col-md-2">Date</div>
+        <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
+          <div class="col-2 col-md-2">Date</div>
           <div class="col-4 col-md-5">Description</div>
           <div class="col-4 col-md-3">Category</div>
           <div class="col-2 col-md-2 text-end">Amount</div>
         </div>
-
-
-        <% @transactions.select { |t| t.category&.title != "Income" }.each do |transaction| %>
+        <% @transactions_expense.where( user_id: current_user.id ).order(created_at: :desc).select { |t| t.category&.title != "Income" }.each do |transaction| %>
           <div class="row align-items-center border-bottom py-2">
             <div class="col-2 col-md-2"><%= transaction.date %></div>
             <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
@@ -81,7 +90,7 @@
           <div class="col-4 col-md-3">Category</div>
           <div class="col-2 col-md-2 text-end">Amount</div>
         </div>
-        <% @transactions.select { |t| t.category&.title == "Income" }.each do |transaction| %>
+        <% @transactions_income.where( user_id: current_user.id ).order(created_at: :desc).select { |t| t.category&.title == "Income" }.each do |transaction| %>
           <div class="row align-items-center border-bottom py-2">
             <div class="col-2 col-md-2"><%= transaction.date %></div>
             <div class="col-4 col-md-5 text-truncate"><%= transaction.description %></div>
