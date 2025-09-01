@@ -13,9 +13,8 @@
 <%# NAV BAR %>
 <div class="box-size">
   <% filtered_totals = @category_totals.reject { |title, _| title == "Income" } %>
-  <%= pie_chart filtered_totals.sort_by { |_, value| -value}, colors: category_colors.values, library: { pieSliceText: 'value' } %>
+  <%= pie_chart filtered_totals, colors: category_colors.values, library: { pieSliceText: 'value' } %>
 </div>
-
 <%# Sorting by months %>
 <p class="box-size mb-2">
   Sort by:
@@ -24,11 +23,9 @@
   <%= link_to "Last 6 months",  categories_path(range: "last_6_months"),  class: (@range == "last_6_months" ? "fw-bold" : "") %> |
   <%= link_to "Total",          categories_path(range: "total"),          class: (@range == "total" ? "fw-bold" : "") %>
 </p>
-
 <%# Sorting the categories by amount %>
 <% sorted_transactions = @transactions.reject { |category, transactions| category.title == "Income" || transactions.empty? }.sort_by { |category, transactions| -transactions.sum(&:amount) } %>
 <%# Sorting the categories %>
-
 <%# Transactions by Category - Collapsible Cards %>
 <div class="box-size">
   <% sorted_transactions.each_with_index do |(category, transactions), index| %>
@@ -49,7 +46,15 @@
             <%# color displaying on the container small %>
             <!-- Right side: total sum -->
             <div class="d-flex ms-auto">
-              <span>¥<%= category_total %></span>
+              <%# color the text if it is over the budget or below the budget  %>
+
+                <% if category_total >= (category.limit || 0) %>
+                  <p style="color: #FF5733;">¥<%= category_total %></p>
+                  <%# showing the limit %>
+                <% else %>
+                  <p class="text-primary">¥<%= category_total %></p>
+                <% end %>
+
             </div>
           </button>
         </h5>
@@ -67,22 +72,22 @@
     </div>
   <% end %>
 </div>
-<div class="box-size card-body mt-3 mb-3">
-  <div class="w-100 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
-    <h2>Add a New Category  <i class="fa-solid fa-circle-plus fa-xl" style="color: #99bc85;"></i> </h2>
-  </div>
-  <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasBottomLabel">Add a New Category</h5>
-      <%# <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button> %>
-    </div>
-    <div class="offcanvas-body small">
-      <%= simple_form_for @category do |f| %>
-        <%= f.input :title %>
-        <%= f.submit %>
-      <% end %>
-    </div>
-  </div>
+</div>
 </div>
 <%# NAV BAR %>
+</div>
+<div class="w-100 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLimit" aria-controls="offcanvasLimit">
+  <h2>Set category limit <i class="fa-solid fa-circle-plus fa-xl" style="color: #99bc85;"></i></h2>
+</div>
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasLimit" aria-labelledby="offcanvasLimitLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasLimitLabel">Set Category Limit</h5>
+  </div>
+  <div class="offcanvas-body small">
+    <%= simple_form_for @category do |f| %>
+      <%= f.input :title %>
+      <%= f.input :limit, as: :integer, step: 1000,  placeholder: "Set your Monthly Budget(Optional)", label: false, input_html: { min: "0" } %>
+      <%= f.submit %>
+    <% end %>
+  </div>
 </div>

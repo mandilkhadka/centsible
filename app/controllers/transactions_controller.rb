@@ -18,14 +18,25 @@ class TransactionsController < ApplicationController
   def create
     @transaction = Transaction.new(transactions_params)
     @transaction.user = current_user
-
-    # Ensure Income rows always attach to the user's "Income" category
+    @category_totals = current_user.transactions.joins(:category).group("categories.title").sum(:amount)
     if @transaction.transaction_type == "income"
       income_category = Category.find_or_create_by!(title: "Income", user: current_user)
       @transaction.category = income_category
     end
 
     if @transaction.save
+      if @transaction.transaction_type == "expense"
+
+        budget = @transaction.category.limit
+
+        spent = @category_totals[@transaction.category.title] || 0
+        if budget.present?
+          if spent + @transaction.amount >= budget
+            flash[:alert] = "You have reached your monthly budget limit for #{@transaction.category.title}."
+          end
+        end
+      end
+
       redirect_to transactions_path
     else
       @transactions = current_user.transactions.order(created_at: :desc)
