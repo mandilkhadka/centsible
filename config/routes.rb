@@ -19,4 +19,5 @@ Rails.application.routes.draw do
   resources :categories, only: [:index, :new, :create]
 
   get "budget", to: "categories#budget"
+  get "saving", to: "categories#saving"
 end

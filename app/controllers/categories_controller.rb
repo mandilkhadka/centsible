@@ -27,6 +27,10 @@ class CategoriesController < ApplicationController
     @categories = Category.all
   end
 
+  def saving
+    @categories = current_user.categories
+  end
+
   private
 
   def category_params
