@@ -45,9 +45,10 @@ class TransactionsController < ApplicationController
 
       redirect_to transactions_path
     else
+      @user_message = Message.new
       @transactions = current_user.transactions.order(created_at: :desc)
       @categories   = current_user.categories
-      flash[:alert] = "Failed to add. Please fill all the input fields and put in the positive value."
+      flash[:alert] = "Failed to add. Please fill all the input fields."
       render "users/dashboard", status: :unprocessable_entity
     end
   end
