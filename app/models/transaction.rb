@@ -20,6 +20,8 @@ class Transaction < ApplicationRecord
   # Type scopes (nice to have)
   scope :incomes,  -> { where(transaction_type: "income") }
   scope :expenses, -> { where(transaction_type: "expense") }
+  scope :savings,     -> { where.not(saving_id: nil) }  # <-- savings transactions
+  scope :non_savings, -> { where(saving_id: nil) }      # <-- everything else
 
   # ---------- user-scoped helpers ----------
   def self.total_expenses_from_start_of_month_for(user)
