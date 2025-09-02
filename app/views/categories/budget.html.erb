@@ -64,13 +64,23 @@
         <div class="mt-1 small text-muted">
           <span class="text-primary">Total spent – ¥<%= number_with_delimiter(total) %></span>
         </div>
-        <%# not working update %>
-<%= form_with model: category, url: update_budget_limit_path(category.id), method: :patch, local: true do |f| %>
-  <div class="input-group mt-2">
-    <%= f.number_field :limit, placeholder: "Set limit", class: "form-control form-control-sm", step: 1, min: 0 %>
-    <button class="btn btn-outline-primary btn-sm" type="submit">Save</button>
-  </div>
-<% end %>
+        <%# update function  %>
+        <div type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLimit-<%= category.id %>" aria-controls="offcanvasLimit">
+          <h5 style="color: #99bc85; font-size: medium">Set category limit</h5>
+        </div>
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasLimit-<%= category.id %>" aria-labelledby="offcanvasLimitLabel-<%= category.id %>">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasLimitLabel-<%= category.id %>">Set Category Limit</h5>
+          </div>
+          <div class="offcanvas-body small">
+            <%= form_with model: category, url: update_budget_limit_path(category.id), method: :patch, local: true do |f| %>
+              <div class="input-group mt-2">
+                <%= f.number_field :limit, placeholder: "Set limit", class: "form-control form-control-sm", step: 1_000, min: 0 %>
+                <button class="btn btn-outline-primary btn-sm" type="submit">Save</button>
+              </div>
+            <% end %>
+          </div>
+        </div>
       <% end %>
     </div>
   <% end %>
