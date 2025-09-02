@@ -25,7 +25,7 @@ class SavingsController < ApplicationController
     end
 
     date = params[:date].present? ? Date.parse(params[:date]) : Date.current
-    desc = params[:description].presence || "Saving deposit - #{saving.title}"
+    desc = params[:description].presence || "Saving deposit
 
     # Ensure a 'Savings' category exists
     savings_category = current_user.categories.find_or_create_by!(title: "Savings")
