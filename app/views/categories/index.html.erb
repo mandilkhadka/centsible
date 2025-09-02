@@ -88,7 +88,7 @@
     <%= simple_form_for @category do |f| %>
       <%= f.input :title %>
       <%= f.input :limit, as: :integer, step: 1000,  placeholder: "Set your Monthly Budget(Optional)", label: false, input_html: { min: "0" } %>
-      <%= f.submit %>
+      <%= f.submit class:"btn btn-outline-primary" %>
     <% end %>
   </div>
 </div>
