@@ -11,8 +11,14 @@ class TransactionsController < ApplicationController
 
     @transactions_expense = @filtered_transactions
                               .expenses
+                              .non_savings
                               .includes(:category)
                               .order(date: :desc, id: :desc)
+
+    @transactions_savings = @filtered_transactions
+                            .savings
+                            .includes(:category, :saving)
+                            .order(date: :desc, id: :desc)
   end
 
   def create

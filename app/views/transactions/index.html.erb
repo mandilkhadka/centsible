@@ -1,48 +1,39 @@
 <!-- TITLE -->
-<!-- | -->
 <div class="box-size">
   <div id="header">
-    <h2 class="d-flex">Transactions </h2>
+    <h2 class="d-flex">Transactions</h2>
   </div>
 </div>
-<!-- | -->
+
 <!-- BALANCE BOX -->
-<!-- | -->
-<!-- | -->
 <div id="dashboard_stats_container" class="d-flex flex-row transactions custom box-size p-0 gap-3 mb-5">
   <div id="last_month_comparison_stat" class="flex-fill rounded-5 shadow-sm p-3 stats_background bg-primary text-white">
     <div class="row g-3">
+      <!-- Top: Available Balance (full width) -->
       <div class="col-12 text-center">
         <div class="fw-bold fs-3">Available Balance:</div>
         <div class="fs-1 fw-bold">
           <%= number_to_currency(@available_balance, unit: "¥", precision: 0, delimiter: ",") %>
         </div>
       </div>
+      <!-- Bottom: two columns side-by-side -->
       <div class="col-6">
-        <div class="fw-bold">
-          Total Income: </div>
+        <div class="fw-bold">Total Income:</div>
         <div class="fs-3 fw-bold">
           <%= number_to_currency(@total_income, unit: "¥", precision: 0, delimiter: ",") %>
         </div>
       </div>
       <div class="col-6 text-end">
         <div class="fw-bold"><%= range_text(@range) %></div>
-        <div class="fs-3 fw-bold"><%= number_to_currency(@total_spent, unit: "¥", precision: 0, delimiter: ",") %></div>
+        <div class="fs-3 fw-bold">
+          <%= number_to_currency(@total_spent, unit: "¥", precision: 0, delimiter: ",") %>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<!-- | -->
-<!-- Add new Category button -->
-<!-- | -->
-<!-- | -->
-<%# <div class="text-center mb-3"> %>
-<%# <%= link_to "Add a Category", categories_path, class: "btn btn-primary d-grid gap-2 w-25 mx-auto rounded-5 text-white" %>
-<%# </div> %>
-<!-- | -->
+
 <!-- SORTING OPTIONS -->
-<!-- | -->
-<!-- | -->
 <p class="box-size mb-2">
   Sort by:
   <%= link_to "This month",     transactions_path(range: "this_month"),     class: (@range == "this_month" ? "fw-bold" : "") %> |
@@ -50,82 +41,134 @@
   <%= link_to "Last 6 months",  transactions_path(range: "last_6_months"),  class: (@range == "last_6_months" ? "fw-bold" : "") %> |
   <%= link_to "Total",          transactions_path(range: "total"),          class: (@range == "total" ? "fw-bold" : "") %>
 </p>
-<!-- | -->
+
 <!-- TRANSACTIONS LIST -->
-<!-- | -->
-<!-- | -->
 <div class="box-size transactions custom rounded-5 shadow-sm p-3 mb-2 bg-secondary">
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-      <span class="nav-link tab-underlined active" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings-tab-pane" role="tab" aria-controls="bookings-tab-pane" aria-selected="true">Expense</span>
+      <span class="nav-link tab-underlined active"
+            id="expense-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#expense-tab-pane"
+            role="tab"
+            aria-controls="expense-tab-pane"
+            aria-selected="true">Expense</span>
     </li>
     <li class="nav-item" role="presentation">
-      <span class="nav-link tab-underlined" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests-tab-pane" role="tab" aria-controls="requests-tab-pane" aria-selected="false">Income</span>
+      <span class="nav-link tab-underlined"
+            id="income-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#income-tab-pane"
+            role="tab"
+            aria-controls="income-tab-pane"
+            aria-selected="false">Income</span>
+    </li>
+    <li class="nav-item" role="presentation">
+      <span class="nav-link tab-underlined"
+            id="savings-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#savings-tab-pane"
+            role="tab"
+            aria-controls="savings-tab-pane"
+            aria-selected="false">Savings</span>
     </li>
   </ul>
+
   <div class="tab-content" id="myTabContent">
     <!-- Expense tab -->
-    <div class="tab-pane fade py-3 show active" id="bookings-tab-pane" role="tabpanel" aria-labelledby="bookings-tab" tabindex="0">
+    <div class="tab-pane fade py-3 show active" id="expense-tab-pane" role="tabpanel" aria-labelledby="expense-tab" tabindex="0">
       <div class="container px-0">
         <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2 align-items-center justify-content-between">
-          <div class="col-4 text-start">
-            <div>Transaction</div>
-          </div>
-          <div class="col-4 text-start">
-            <div>Category</div>
-          </div>
-          <div class="col-4 text-end">
-            <div>Amount</div>
-          </div>
+          <div class="col-4 text-start">Transaction</div>
+          <div class="col-4 text-start">Category</div>
+          <div class="col-4 text-end">Amount</div>
         </div>
-        <% @transactions_expense.where(user_id: current_user.id).order(created_at: :desc).select { |t| t.category&.title != "Income" }.each do |transaction| %>
-          <div class="row align-items-center border-bottom py-2 align-items-center justify-content-between">
-            <div class="col-4 d-flex flex-column">
-              <div class="text-light-grey"><%= transaction.date %></div>
-              <div><%= transaction.description %></div>
-            </div>
-            <div class="col-4">
-              <div><%= transaction.category&.title %></div>
-            </div>
-            <div class="col-4 text-end">
-              <div class=" <%= transaction.amount.to_f < 0 ? 'text-danger' : 'text-success' %>">
-                <%= "¥#{transaction.amount}" %>
+
+        <% if @transactions_expense.any? %>
+          <% @transactions_expense.each do |transaction| %>
+            <div class="row align-items-center border-bottom py-2 align-items-center justify-content-between">
+              <div class="col-4 d-flex flex-column">
+                <div class="text-light-grey"><%= transaction.date %></div>
+                <div><%= transaction.description %></div>
+              </div>
+              <div class="col-4">
+                <div><%= transaction.category&.title %></div>
+              </div>
+              <div class="col-4 text-end">
+                <div class="<%= transaction.amount.to_f < 0 ? 'text-danger' : 'text-success' %>">
+                  <%= number_to_currency(transaction.amount, unit: "¥", precision: 0, delimiter: ",") %>
+                </div>
               </div>
             </div>
-          </div>
+          <% end %>
+        <% else %>
+          <div class="py-3 text-center text-muted">No expenses for this period.</div>
         <% end %>
       </div>
     </div>
+
     <!-- Income tab -->
-    <div class="tab-pane fade py-3" id="requests-tab-pane" role="tabpanel" aria-labelledby="requests-tab" tabindex="0">
+    <div class="tab-pane fade py-3" id="income-tab-pane" role="tabpanel" aria-labelledby="income-tab" tabindex="0">
       <div class="container px-0">
-        <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2">
-          <div class="col-4 text-center">
-            <div class="text-justify">Date / Description</div>
-          </div>
-          <div class="col-4 text-center">
-            <div class="text-justify">Category</div>
-          </div>
-          <div class="col-4 text-center">
-            <div class="text-justify">Amount</div>
-          </div>
+        <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2 align-items-center justify-content-between">
+          <div class="col-4 text-start">Transaction</div>
+          <div class="col-4 text-start">Category</div>
+          <div class="col-4 text-end">Amount</div>
         </div>
-        <% @transactions_income.where(user_id: current_user.id).order(created_at: :desc).select { |t| t.category&.title == "Income" }.each do |transaction| %>
-          <div class="row align-items-center border-bottom py-2">
-            <div class="col-4 d-flex flex-column text-center">
-              <div class="text-justify"><%= transaction.date %></div>
-              <div class="text-justify"><%= transaction.description %></div>
+
+        <% if @transactions_income.any? %>
+          <% @transactions_income.each do |transaction| %>
+            <div class="row align-items-center border-bottom py-2 align-items-center justify-content-between">
+              <div class="col-4 d-flex flex-column">
+                <div class="text-light-grey"><%= transaction.date %></div>
+                <div><%= transaction.description %></div>
+              </div>
+              <div class="col-4">
+                <div><%= transaction.category&.title %></div>
+              </div>
+              <div class="col-4 text-end">
+                <div class="text-success">
+                  <%= number_to_currency(transaction.amount, unit: "¥", precision: 0, delimiter: ",") %>
+                </div>
+              </div>
             </div>
-            <div class="col-4 text-center">
-              <div class="text-justify"><%= transaction.category&.title %></div>
+          <% end %>
+        <% else %>
+          <div class="py-3 text-center text-muted">No income for this period.</div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Savings tab -->
+    <div class="tab-pane fade py-3" id="savings-tab-pane" role="tabpanel" aria-labelledby="savings-tab" tabindex="0">
+      <div class="container px-0">
+        <div class="row fw-semibold text-muted text-uppercase small border-bottom py-2 align-items-center justify-content-between">
+          <div class="col-4 text-start">Transaction</div>
+          <div class="col-4 text-start">Saving</div>
+          <div class="col-4 text-end">Amount</div>
+        </div>
+
+        <% if @transactions_savings.any? %>
+          <% @transactions_savings.each do |transaction| %>
+            <div class="row align-items-center border-bottom py-2 align-items-center justify-content-between">
+              <div class="col-4 d-flex flex-column">
+                <div class="text-light-grey"><%= transaction.date %></div>
+                <div><%= transaction.description %></div>
+              </div>
+              <div class="col-4">
+                <div><%= transaction.saving&.title || transaction.category&.title %></div>
+              </div>
+              <div class="col-4 text-end">
+                <div>
+                  <%= number_to_currency(transaction.amount, unit: "¥", precision: 0, delimiter: ",") %>
+                </div>
+              </div>
             </div>
-            <div class="col-4 text-center">
-              <div class="text-justify text-success"><%= "¥#{transaction.amount}" %></div>
-            </div>
-          </div>
+          <% end %>
+        <% else %>
+          <div class="py-3 text-center text-muted">No savings for this period.</div>
         <% end %>
       </div>
     </div>
   </div>
 </div>
-<%# CREATE TRANSACTION FORM %>
