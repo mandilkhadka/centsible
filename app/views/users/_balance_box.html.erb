@@ -1,7 +1,6 @@
 <%# BALANCE %>
-<div id="balance_box" class="box-size mb-4" style="width: 70%;">
+<div id="balance_box" class="box-size mb-4 w-70">
   <div class="rounded-5 shadow-sm p-3 bg-success text-white d-flex flex-column gap-2">
-
     <!-- Available Balance -->
     <div class="text-center">
       <div class="fw-bold">Available Balance:</div>
@@ -9,7 +8,6 @@
         <%= number_to_currency(@available_balance, unit: "¥", precision: 0, delimiter: ",") %>
       </div>
     </div>
-
     <!-- Spent -->
     <div class="text-end w-100 mb-0">
       <div class="small opacity-75"><%= range_text(@range) %></div>
@@ -17,6 +15,5 @@
         <%= number_to_currency(@total_spent, unit: "¥", precision: 0, delimiter: ",") %>
       </div>
     </div>
-
   </div>
 </div>
