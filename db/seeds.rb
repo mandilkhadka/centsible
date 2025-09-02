@@ -7,6 +7,7 @@ require "date"
 
 puts "Cleaning up…"
 Transaction.delete_all
+Saving.delete_all
 Category.delete_all
 Message.delete_all
 User.delete_all
