@@ -6,6 +6,7 @@ class Transaction < ApplicationRecord
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :description, presence: true
+  validates :category, presence: true, if: -> { transaction_type == "expense" }
 
   # Existing date scopes (yours)
   scope :this_month,     -> { where(date: Time.zone.today.beginning_of_month..Time.zone.today.end_of_month) }

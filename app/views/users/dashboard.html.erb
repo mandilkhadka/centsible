@@ -67,16 +67,15 @@
     <li class="nav-item" role="presentation">
       <span class="nav-link tab-underlined" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests-tab-pane" role="tab" aria-controls="requests-tab-pane" aria-selected="false">
         Income
-
       </span>
     </li>
   </ul>
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade py-3 show active" id="bookings-tab-pane" role="tabpanel" aria-labelledby="bookings-tab" tabindex="0">
-      <%= render "partials/form", transaction: Transaction.new, categories: current_user.categories, expense: true %>
+      <%= render "partials/form", transaction: @transaction, categories: current_user.categories, expense: true %>
     </div>
     <div class="tab-pane fade py-3" id="requests-tab-pane" role="tabpanel" aria-labelledby="requests-tab" tabindex="0">
-      <%= render "partials/form", transaction: Transaction.new, categories: current_user.categories, expense: false %>
+      <%= render "partials/form", transaction: @transaction, categories: current_user.categories, expense: false %>
     </div>
   </div>
 </div>
