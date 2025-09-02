@@ -11,7 +11,8 @@ class MessagesController < ApplicationController
     build_conversation_history
     history = PastTransactionTool.new(current_user)
     categories = CategoriesTool.new(current_user)
-    response = @ruby_llm_chat.with_tools(categories, history).with_instructions(instructions).ask(@user_message.content).content
+    transaction_maker = TextTransactionMakerTool.new(current_user, CategoriesFinderTool.new(current_user))
+    response = @ruby_llm_chat.with_tools(categories, history, transaction_maker).with_instructions(instructions).ask(@user_message.content).content
     @ai_message = Message.create(content: response, role: 'assistant', user: current_user)
     if @ai_message.valid?
   respond_to do |format|

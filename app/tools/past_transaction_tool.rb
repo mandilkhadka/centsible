@@ -1,4 +1,6 @@
 class PastTransactionTool < RubyLLM::Tool
+  description "Gets past transaction data"
+
   def initialize(user)
     @user = user
   end

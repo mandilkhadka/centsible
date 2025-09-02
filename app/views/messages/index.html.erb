@@ -8,8 +8,8 @@
           </div>
         </div>
       <% elsif message.role == "assistant" %>
-        <div class="d-flex justify-content-start mb-5">
-          <div class="px-3 pb-0 pt-3">
+        <div class="bg-primary px-3 pb-0 pt-3 rounded-pill align-self-center">
+          <div class="px-3 pb-3 pt-3">
             <%= markdown(message.content) %>
           </div>
         </div>

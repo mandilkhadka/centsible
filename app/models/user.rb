@@ -12,12 +12,11 @@ class User < ApplicationRecord
   # validates :starting_balance, numericality: { only_integer: true }
 
   def total_income
-    transactions.where(transaction_type: "income").sum(:amount)
+    transactions.where("LOWER(transaction_type) LIKE ?", "%income%").sum(:amount)
   end
 
   def total_spent
-    transactions.where(transaction_type: "expense").sum(:amount)
-    # Transaction.where(date: (Date.current.beginning_of_month)..Date.current).sum(:amount).where(transaction_type: "expense").sum(:amount)
+    transactions.where("LOWER(transaction_type) LIKE ?", "%expense%").sum(:amount)
   end
 
   def available_balance
