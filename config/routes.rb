@@ -17,12 +17,14 @@ Rails.application.routes.draw do
   resources :users, only: [:show, :edit, :update]
   resources :messages, only: [:index, :new, :create]
 
-  resources :categories, only: [:index, :new, :create, :edit]
+  resources :categories, only: [:index, :new, :create, :edit, :update]
     resources :savings, only: [:index, :create] do
     post :deposits, on: :member
   end
+  get "budget", to: "categories#budget"
 
-    get "budget", to: "categories#budget"
-  get "budget", to: "categories#edit"
-  patch "budget", to: "categories#update"
+  patch "budget/:id", to: "categories#update", as: :update_budget_limit
+
+  get 'budget/:id/edit', to: 'budgets#edit', as: 'edit_budget'
+
 end

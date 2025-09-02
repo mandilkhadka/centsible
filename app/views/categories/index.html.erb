@@ -48,11 +48,12 @@
             <div class="d-flex ms-auto">
               <%# color the text if it is over the budget or below the budget  %>
 
-                <% if category_total >= (category.limit || 0) %>
-                  <p style="color: #FF5733;">¥<%= category_total %></p>
+                <% if category.limit.nil? || category_total < (category.limit || 0) %>
                   <%# showing the limit %>
-                <% else %>
                   <p class="text-primary">¥<%= category_total %></p>
+                <% else category.limit.nil?%>
+                  <p style="color: #FF5733;">¥<%= category_total %></p>
+
                 <% end %>
 
             </div>
@@ -76,18 +77,18 @@
 </div>
 <%# NAV BAR %>
 </div>
-<div class="w-100 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLimit" aria-controls="offcanvasLimit">
-  <h2>Set category limit <i class="fa-solid fa-circle-plus fa-xl" style="color: #99bc85;"></i></h2>
+<div class="w-100 d-flex align-items-center justify-content-center mt-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLimit" aria-controls="offcanvasLimit">
+  <h2>Create a new Category <i class="fa-solid fa-circle-plus fa-xl" style="color: #99bc85;"></i></h2>
 </div>
 <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasLimit" aria-labelledby="offcanvasLimitLabel">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasLimitLabel">Set Category Limit</h5>
+    <h5 class="offcanvas-title" id="offcanvasLimitLabel">Create a new Category</h5>
   </div>
   <div class="offcanvas-body small">
     <%= simple_form_for @category do |f| %>
       <%= f.input :title %>
       <%= f.input :limit, as: :integer, step: 1000,  placeholder: "Set your Monthly Budget(Optional)", label: false, input_html: { min: "0" } %>
-      <%= f.submit %>
+      <%= f.submit class:"btn btn-outline-primary" %>
     <% end %>
   </div>
 </div>
