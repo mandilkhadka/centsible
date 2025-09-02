@@ -21,6 +21,9 @@
   <%= link_to "Last 6 months",  categories_path(range: "last_6_months"),  class: (@range == "last_6_months" ? "fw-bold" : "") %> |
   <%= link_to "Total",          categories_path(range: "total"),          class: (@range == "total" ? "fw-bold" : "") %>
 </p>
+<div class="box-size">
+  <%= link_to "Budget for this month", budget_path, class: "d-flex justify-content-end mb-2 fw-semibold" %>
+</div>
 <%# Sorting the categories by amount %>
 <% sorted_transactions = @transactions.reject { |category, transactions| category.title == "Income" || transactions.empty? }.sort_by { |category, transactions| -transactions.sum(&:amount) } %>
 <%# Sorting the categories %>
@@ -68,12 +71,14 @@
     </div>
   <% end %>
 </div>
+
 <div class="w-100 d-flex justify-content-center">
   <div class="d-flex align-items-center justify-content-center mt-3 badge bg-primary text-wrap rounded-4 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLimit" aria-controls="offcanvasLimit">
     <h2 class="fs-3 m-0">Create a new Category <i class="fa-solid fa-circle-plus" style="color: #ffffffff;"></i></h2>
   </div>
 </div>
 </div>
+
 <%# NAV BAR %>
 </div>
 <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasLimit" aria-labelledby="offcanvasLimitLabel">
