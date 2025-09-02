@@ -25,7 +25,12 @@ class SavingsController < ApplicationController
     end
 
     date = params[:date].present? ? Date.parse(params[:date]) : Date.current
-    desc = params[:description].presence || "Saving deposit"
+    desc = params[:description].to_s.strip
+    desc = "Saving deposit" if desc.blank?
+    # If someone passed "Saving deposit - <title>", collapse to "Saving deposit"
+    if desc.match?(/\A\s*Saving deposit\s*-\s*#{Regexp.escape(saving.title)}\s*\z/i)
+      desc = "Saving deposit"
+    end
 
     # Ensure a 'Savings' category exists
     savings_category = current_user.categories.find_or_create_by!(title: "Savings")
