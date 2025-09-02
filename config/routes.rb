@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     post :deposits, on: :member
   end
 
-    get "budget", to: "categories#budget"
+  get "budget", to: "categories#budget"
   get "budget", to: "categories#edit"
   patch "budget", to: "categories#update"
 end

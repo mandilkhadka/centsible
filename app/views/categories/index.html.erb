@@ -48,11 +48,12 @@
             <div class="d-flex ms-auto">
               <%# color the text if it is over the budget or below the budget  %>
 
-                <% if category_total >= (category.limit || 0) %>
-                  <p style="color: #FF5733;">¥<%= category_total %></p>
+                <% if category.limit.nil? || category_total < (category.limit || 0) %>
                   <%# showing the limit %>
-                <% else %>
                   <p class="text-primary">¥<%= category_total %></p>
+                <% else category.limit.nil?%>
+                  <p style="color: #FF5733;">¥<%= category_total %></p>
+
                 <% end %>
 
             </div>
