@@ -53,7 +53,7 @@ def update
   if @category.update(category_params)
     redirect_to budget_path, notice: "Category limit updated!"
   else
-    render "edit", alert: "Failed to update category limit."
+    redirect_to budget_path, alert: "Failed to update category limit."
   end
 end
 
