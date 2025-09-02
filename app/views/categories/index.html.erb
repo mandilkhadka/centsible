@@ -1,7 +1,5 @@
 <%# HEADER PARTIAL %>
-
-  <%= render "users/balance_box" %>
-
+<%= render "users/balance_box" %>
 <%# HEADER PARTIAL %>
 <%# making colors same to piechart and the dropdown  %>
 <% category_colors = {} %>
@@ -23,6 +21,9 @@
   <%= link_to "Last 6 months",  categories_path(range: "last_6_months"),  class: (@range == "last_6_months" ? "fw-bold" : "") %> |
   <%= link_to "Total",          categories_path(range: "total"),          class: (@range == "total" ? "fw-bold" : "") %>
 </p>
+<div class="box-size">
+  <%= link_to "Budget for this month", budget_path, class: "d-flex justify-content-end mb-2 fw-semibold" %>
+</div>
 <%# Sorting the categories by amount %>
 <% sorted_transactions = @transactions.reject { |category, transactions| category.title == "Income" || transactions.empty? }.sort_by { |category, transactions| -transactions.sum(&:amount) } %>
 <%# Sorting the categories %>
@@ -47,15 +48,12 @@
             <!-- Right side: total sum -->
             <div class="d-flex ms-auto">
               <%# color the text if it is over the budget or below the budget  %>
-
-                <% if category.limit.nil? || category_total < (category.limit || 0) %>
-                  <%# showing the limit %>
-                  <p class="text-primary">¥<%= category_total %></p>
-                <% else category.limit.nil?%>
-                  <p style="color: #FF5733;">¥<%= category_total %></p>
-
-                <% end %>
-
+              <% if category.limit.nil? || category_total < (category.limit || 0) %>
+                <%# showing the limit %>
+                <p class="text-primary">¥<%= category_total %></p>
+              <% else category.limit.nil?%>
+                <p style="color: #FF5733;">¥<%= category_total %></p>
+              <% end %>
             </div>
           </button>
         </h5>
@@ -72,8 +70,6 @@
       </div>
     </div>
   <% end %>
-</div>
-</div>
 </div>
 <%# NAV BAR %>
 </div>
