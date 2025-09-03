@@ -11,7 +11,7 @@ export default class extends Controller {
     this.recognition = new SpeechRecognition()
     this.recognition.continuous = true
     this.recognition.interimResults = true
-    this.recognition.lang = "en-US"
+    this.recognition.lang = "en"
 
     this.recognition.onresult = (event) => {
       let transcript = ""
