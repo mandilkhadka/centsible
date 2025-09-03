@@ -12,17 +12,19 @@
         </ul>
       </div>
 
-      <div class="d-flex gap-2">
-        <%= form_with url: confirm_chat_transaction_path, method: :post do %>
-          <%= hidden_field_tag :payload, signed_draft %>
-          <%= submit_tag "Confirm", class: "btn btn-success" %>
-        <% end %>
+      <div class="d-flex gap-2 align-items-start">
+        <%= button_to "Confirm",
+                      confirm_chat_transaction_path,
+                      method: :post,
+                      params: { payload: signed_draft },
+                      form: { data: { turbo: true } },
+                      class: "btn btn-success" %>
 
         <%= button_to "Cancel",
                       dismiss_chat_transaction_path,
                       method: :post,
-                      class: "btn btn-outline-secondary",
-                      form: { data: { turbo_confirm: "Discard this draft?" } } %>
+                      form: { data: { turbo: true, turbo_confirm: "Discard this draft?" } },
+                      class: "btn btn-outline-secondary" %>
       </div>
     </div>
   </div>
