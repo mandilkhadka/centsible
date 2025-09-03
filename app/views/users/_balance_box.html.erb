@@ -1,18 +1,28 @@
-<%# BALANCE %>
-<div id="balance_box" class="box-size mb-4 w-70">
-  <div class="rounded-5 shadow-sm p-3 bg-success text-white d-flex flex-column gap-2">
-    <!-- Available Balance -->
-    <div class="text-center">
-      <div class="fw-bold">Available Balance:</div>
-      <div class="fs-1 fw-bold">
-        <%= number_to_currency(@available_balance, unit: "¥", precision: 0, delimiter: ",") %>
+<!-- BALANCE BOX -->
+<div id="dashboard_stats_container" class="d-flex flex-row transactions custom box-size p-0 gap-3 mb-5">
+  <div id="last_month_comparison_stat" class="flex-fill rounded-5 shadow-sm p-3 stats_background bg-primary text-white">
+    <div class="row g-3">
+      <!-- Top: Available Balance (full width) -->
+      <div class="col-12 text-center">
+        <div class="fw-bold fs-3">Available Balance:</div>
+        <div class="fs-1 fw-bold">
+          <%= number_to_currency(@available_balance, unit: "¥", precision: 0, delimiter: ",") %>
+        </div>
       </div>
-    </div>
-    <!-- Spent -->
-    <div class="text-end w-100 mb-0">
-      <div class="small opacity-75"><%= range_text(@range) %></div>
-      <div class="fs-5 fw-bold">
-        <%= number_to_currency(@total_spent, unit: "¥", precision: 0, delimiter: ",") %>
+      <!-- Bottom: two columns side-by-side -->
+      <div class="col-6">
+        <div class="fw-bold">
+          Total Income:
+        </div>
+        <div class="fs-3 fw-bold">
+          <i class="fa-solid fa-circle-arrow-up fa-sm text-black-50"></i> <%= number_to_currency(@total_income, unit: "¥", precision: 0, delimiter: ",") %>
+        </div>
+      </div>
+      <div class="col-6 text-end">
+        <div class="fw-bold"><%= range_text(@range) %></div>
+        <div class="fs-3 fw-bold">
+          <i class="fa-solid fa-circle-arrow-down fa-sm text-black-50"></i>  <%= number_to_currency(@total_spent, unit: "¥", precision: 0, delimiter: ",") %>
+        </div>
       </div>
     </div>
   </div>

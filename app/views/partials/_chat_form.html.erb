@@ -1,16 +1,32 @@
 <div id="chat_dashboard" class="box-size p-0">
-  <%= simple_form_for(user_message) do |f| %>
+  <%= simple_form_for(user_message, html: { data: { controller: "speech-to-text" } }) do |f| %>
     <div class="position-relative my-4">
       <%= f.input :content,
             as: :string,
             placeholder: "Message..",
             required: true,
             label: false,
-            input_html: { class: "form-control rounded-pill pe-5 bg-white" } %>
-
+            input_html: { autofocus: true, data: { speech_to_text_target: "input" }, class: "form-control rounded-pill pe-5 bg-white" } %>
       <!-- Send button inside the input -->
+      <button type="button" data-speech-to-text-target="button" data-action="click->speech-to-text#voiceinput">🎤 Speak</button>
       <%= f.button :button, class: "btn btn-success rounded-circle position-absolute end-0 top-50 translate-middle-y me-2" do %>
         <i class="fa-solid fa-arrow-up text-white"></i>
-      <% end %>
-    </div>
-  <% end %>
+      </div>
+      <!-- Hidden file input -->
+      <%= f.input :file,
+            as: :file,
+            label: false,
+            required: false,
+            input_html: {
+              class: "d-none",
+              id: "file_upload_input",
+              accept: "image/*",
+              capture: "environment" # or "user" for front-facing
+            } %>
+      <label for="file_upload_input" class="ms-2" style="cursor: pointer;">
+        <i class="fa-solid fa-camera fa-xl" style="color: rgb(160, 187, 138);"></i>
+      </label>
+    <% end %>
+  </div>
+  <!-- Camera icon (clickable) - just before input field -->
+<% end %>
