@@ -3,7 +3,7 @@ class MessagesController < ApplicationController
   include MessagesHelper
 
   def index
-    @messages = current_user.messages.order(:created_at)
+    @messages = current_user.messages.order(:created_at).last(6)
     @user_message = Message.new
     @draft_payload = nil
   end
@@ -66,7 +66,7 @@ class MessagesController < ApplicationController
 
   def build_conversation_history
     @ruby_llm_chat = RubyLLM.chat(model: 'gemini-2.5-flash')
-    current_user.messages.order(:created_at).each do |message|
+    current_user.messages.order(created_at: :desc).limit(20).reverse.each do |message|
       @ruby_llm_chat.add_message(content: message.content, role: message.role)
     end
   end
