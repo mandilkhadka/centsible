@@ -55,7 +55,7 @@ class MessagesController < ApplicationController
   end
 
   def send_picture(model: "gemini-2.5-flash", with: {})
-    instruction = "Get me the date, total and make a category for the transaction which is included in this [ 'Food', 'Health', 'Commute', 'Utilities', 'Entertainment', 'Others']. and then give it a name for the transaction."
+    instruction = " Drafts a transaction from user input without saving with description of transaction (2-3 words)), amount (the monetary value), must be either expense or income, the transaction date, and select a category of the transaction based on description from this categories #{Category.pluck(:title).join(', ')}. Only confirm after this to add it in the transaction table."
     @chat = RubyLLM.chat(model: model)
     @response = @chat.with_instructions(instruction).ask(@user_message.content , with: with)
   end
