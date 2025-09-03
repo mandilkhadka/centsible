@@ -4,35 +4,8 @@
     <h2 class="d-flex">Transactions</h2>
   </div>
 </div>
-
 <!-- BALANCE BOX -->
-<div id="dashboard_stats_container" class="d-flex flex-row transactions custom box-size p-0 gap-3 mb-5">
-  <div id="last_month_comparison_stat" class="flex-fill rounded-5 shadow-sm p-3 stats_background bg-primary text-white">
-    <div class="row g-3">
-      <!-- Top: Available Balance (full width) -->
-      <div class="col-12 text-center">
-        <div class="fw-bold fs-3">Available Balance:</div>
-        <div class="fs-1 fw-bold">
-          <%= number_to_currency(@available_balance, unit: "¥", precision: 0, delimiter: ",") %>
-        </div>
-      </div>
-      <!-- Bottom: two columns side-by-side -->
-      <div class="col-6">
-        <div class="fw-bold">Total Income:</div>
-        <div class="fs-3 fw-bold">
-          <%= number_to_currency(@total_income, unit: "¥", precision: 0, delimiter: ",") %>
-        </div>
-      </div>
-      <div class="col-6 text-end">
-        <div class="fw-bold"><%= range_text(@range) %></div>
-        <div class="fs-3 fw-bold">
-          <%= number_to_currency(@total_spent, unit: "¥", precision: 0, delimiter: ",") %>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
+<%= render "users/balance_box" %>
 <!-- SORTING OPTIONS -->
 <p class="box-size mb-2">
   Sort by:
@@ -41,7 +14,6 @@
   <%= link_to "Last 6 months",  transactions_path(range: "last_6_months"),  class: (@range == "last_6_months" ? "fw-bold" : "") %> |
   <%= link_to "Total",          transactions_path(range: "total"),          class: (@range == "total" ? "fw-bold" : "") %>
 </p>
-
 <!-- TRANSACTIONS LIST -->
 <div class="box-size transactions custom rounded-5 shadow-sm p-3 mb-2 bg-secondary">
   <ul class="nav tabs-underlined" id="myTab" role="tablist">
@@ -73,7 +45,6 @@
             aria-selected="false">Savings</span>
     </li>
   </ul>
-
   <div class="tab-content" id="myTabContent">
     <!-- Expense tab -->
     <div class="tab-pane fade py-3 show active" id="expense-tab-pane" role="tabpanel" aria-labelledby="expense-tab" tabindex="0">
@@ -105,7 +76,6 @@
         <% end %>
       </div>
     </div>
-
     <!-- Income tab -->
     <div class="tab-pane fade py-3" id="income-tab-pane" role="tabpanel" aria-labelledby="income-tab" tabindex="0">
       <div class="container px-0">
@@ -114,7 +84,6 @@
           <div class="col-4 text-start">Category</div>
           <div class="col-4 text-end">Amount</div>
         </div>
-
         <% if @transactions_income.any? %>
           <% @transactions_income.each do |transaction| %>
             <div class="row align-items-center border-bottom py-2 align-items-center justify-content-between">
@@ -137,7 +106,6 @@
         <% end %>
       </div>
     </div>
-
     <!-- Savings tab -->
     <div class="tab-pane fade py-3" id="savings-tab-pane" role="tabpanel" aria-labelledby="savings-tab" tabindex="0">
       <div class="container px-0">
@@ -146,7 +114,6 @@
           <div class="col-4 text-start">Saving</div>
           <div class="col-4 text-end">Amount</div>
         </div>
-
         <% if @transactions_savings.any? %>
           <% @transactions_savings.each do |transaction| %>
             <div class="row align-items-center border-bottom py-2 align-items-center justify-content-between">
