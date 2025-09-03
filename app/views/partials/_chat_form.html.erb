@@ -22,6 +22,7 @@
             label: false,
             required: false,
             input_html: {
+              onchange: "this.form.requestSubmit()",
               class: "d-none",
               id: "file_upload_input",
               accept: "image/*",
