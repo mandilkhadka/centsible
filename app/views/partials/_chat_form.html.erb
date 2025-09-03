@@ -7,11 +7,25 @@
             required: true,
             label: false,
             input_html: { class: "form-control rounded-pill pe-5 bg-white" } %>
-
       <!-- Send button inside the input -->
       <%= f.button :button, class: "btn btn-success rounded-circle position-absolute end-0 top-50 translate-middle-y me-2" do %>
         <i class="fa-solid fa-arrow-up text-white"></i>
-      <% end %>
-    </div>
-  <% end %>
-</div>
+      </div>
+      <!-- Hidden file input -->
+      <%= f.input :file,
+            as: :file,
+            label: false,
+            required: false,
+            input_html: {
+              class: "d-none",
+              id: "file_upload_input",
+              accept: "image/*",
+              capture: "environment" # or "user" for front-facing
+            } %>
+      <label for="file_upload_input" class="ms-2" style="cursor: pointer;">
+        <i class="fa-solid fa-camera fa-xl" style="color: rgb(160, 187, 138);"></i>
+      </label>
+    <% end %>
+  </div>
+  <!-- Camera icon (clickable) - just before input field -->
+<% end %>
