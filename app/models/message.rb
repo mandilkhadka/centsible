@@ -21,11 +21,16 @@ If the user asks to create/make/record a transaction, follow these steps:
 
 2. If any required information is missing (amount, date, transaction_type, etc), ask the user for clarification.
 
-3. Before making the record, show the draft transaction with all of the info to the user and ask for confirmation. Display all of the attributes including category (picked from #{Category.pluck(:title).join(", ")}) of the transaction with a list of bullet points.
+# in Message#build_content (replace steps 3-5)
+3. Prepare a draft transaction (do NOT save it yet). Resolve a category from the text.
+  Then output the draft in a single JSON object between markers exactly like:
 
-4. If the user approves the draft record the transaction using TextTransactionMakerTool.
+  ```DRAFT_TX
+  {"description":"...", "amount":1234, "transaction_type":"expense", "date":"2025-09-03", "category_title":"Coffee"}
 
-5. Inform the user that the transaction was successfully saved, including all relevant details (amount, category, date, description).
+Ask the user to confirm in one short sentence below the block.
+
+After I confirm, you may say “Saved!” with a one-line summary.
 
 PROMPT
   end

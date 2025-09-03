@@ -18,4 +18,8 @@
   </div>
 </div>
 
+<div id="confirm_bar">
+  <%= render "partials/confirm_bar", draft: nil, signed_draft: nil %>
+</div>
+
 <%= render partial: "partials/chat_form", locals: { user_message: @user_message } %>
