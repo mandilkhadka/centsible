@@ -25,13 +25,10 @@ class MessagesController < ApplicationController
     # Ask the model. If a file is attached, pass it via `with:` so vision/ASR can be used.
     response =
       if @user_message.file&.attached?
-        # ✅ Build an absolute URL for the blob
-        file_url = rails_blob_url(@user_message.file, only_path: false)
-
         @ruby_llm_chat
           .with_tools(history)
           .with_instructions(instructions)
-          .ask(@user_message.content.presence || "Receipt", with: { file: file_url })
+          .ask(@user_message.content, with: { file: @user_message.file.url })
           .content
       else
         @ruby_llm_chat
