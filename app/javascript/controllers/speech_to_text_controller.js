@@ -24,7 +24,7 @@ export default class extends Controller {
     this.recognition.onend = () => {
       console.log("Speech recognition ended")
       this.isRecording = false
-      this.buttonTarget.innerText = "🎤 Speak"
+      this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone fa-xl" style="color: rgb(160, 187, 138);""></i>'
     }
   }
 
@@ -32,7 +32,7 @@ export default class extends Controller {
     if (!this.isRecording) {
       this.recognition.start()
       this.isRecording = true
-      this.buttonTarget.innerText = "Stop"
+      this.buttonTarget.innerHTML = 'Listening <i class="fa-solid fa-microphone fa-beat fa-xl" style="color: rgb(160, 187, 138);"></i>'
       console.log("Recording started")
     } else {
       this.recognition.stop()
