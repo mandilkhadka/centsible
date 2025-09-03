@@ -1,10 +1,24 @@
-<div class="d-flex <%= message.role == "user" ? 'justify-content-end' : 'justify-content-start' %> mb-2">
-  <div class="chat-bubble <%= message.role == 'user' ? 'from-user user-m' : 'from-assistant llm-m' %>">
-    <% if message.role == "user" %>
-      <%= message.content %>
-    <% elsif message.role == "assistant" %>
-      <%= markdown(message.content) %>
-    <% end %>
-  </div>
-</div>
+<% content =
+    if message.role == "assistant"
+      strip_draft_block(message.content) # removes ```DRAFT_TX ... ``` + "Confirm..." line
+    else
+      message.content
+    end %>
 
+<% unless content.blank? %>
+  <div class="d-flex <%= message.role == "user" ? 'justify-content-end' : 'justify-content-start' %> mb-2">
+    <div class="chat-bubble <%= message.role == 'user' ? 'from-user user-m' : 'from-assistant llm-m' %>">
+      <% if message.role == "user" %>
+        <%= content %>
+            <% if message.file.attached? %>
+      <div class="mb-2">
+        <%= image_tag(message.file.variant(resize_to_limit: [300, 300]), class: "img-fluid rounded shadow-sm") %>
+      </div>
+    <% end %>
+
+      <% else %>
+        <%= markdown(content) %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
