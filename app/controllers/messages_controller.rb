@@ -18,8 +18,7 @@ class MessagesController < ApplicationController
     instructions = @user_message.build_content
     build_conversation_history
 
-    history    = PastTransactionTool.new(current_user)
-    categories = CategoriesFinderTool.new(current_user)
+    history = PastTransactionTool.new(current_user)
 
     response = @ruby_llm_chat
       .with_tools(history)
@@ -38,7 +37,11 @@ class MessagesController < ApplicationController
           turbo_stream.append("messages", partial: "partials/message", locals: { message: @user_message }),
           turbo_stream.append("messages", partial: "partials/message", locals: { message: @ai_message }),
           turbo_stream.replace("chat_dashboard", partial: "partials/chat_form", locals: { user_message: Message.new }),
-          turbo_stream.replace("confirm_bar", partial: "partials/confirm_bar", locals: { draft: draft, signed_draft: signed_draft })
+          # keep the <turbo-frame id="confirm_bar"> and only update its contents
+          turbo_stream.update(
+            "confirm_bar",
+            render_to_string(partial: "partials/confirm_bar", locals: { draft: draft, signed_draft: signed_draft })
+          )
         ]
       end
       format.html { redirect_to messages_path }
@@ -47,7 +50,6 @@ class MessagesController < ApplicationController
 
   private
 
-  # Rebuild the LLM chat with prior messages so the model has context
   def build_conversation_history
     @ruby_llm_chat = RubyLLM.chat(model: 'gemini-2.5-flash')
     current_user.messages.order(:created_at).each do |message|
