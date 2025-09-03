@@ -1,0 +1,31 @@
+<% if draft.present? %>
+  <div class="box-size mt-3">
+    <div class="rounded-4 shadow p-3 bg-white d-flex justify-content-between align-items-start">
+      <div>
+        <div class="fw-bold">Confirm this transaction?</div>
+        <ul class="mb-2">
+          <li><strong>Amount:</strong> ¥<%= number_with_delimiter(draft["amount"].to_i) %></li>
+          <li><strong>Type:</strong> <%= draft["transaction_type"].to_s.capitalize %></li>
+          <li><strong>Date:</strong> <%= draft["date"] %></li>
+          <li><strong>Category:</strong> <%= draft["category_title"] %></li>
+          <li><strong>Description:</strong> <%= draft["description"] %></li>
+        </ul>
+      </div>
+
+      <div class="d-flex gap-2 align-items-start">
+        <%= button_to "Confirm",
+                      confirm_chat_transaction_path,
+                      method: :post,
+                      params: { payload: signed_draft },
+                      form: { data: { turbo: true } },
+                      class: "btn btn-success" %>
+
+        <%= button_to "Cancel",
+                      dismiss_chat_transaction_path,
+                      method: :post,
+                      form: { data: { turbo: true, turbo_confirm: "Discard this draft?" } },
+                      class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+  </div>
+<% end %>
