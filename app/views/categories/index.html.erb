@@ -36,23 +36,14 @@
       <div class="card-header rounded-3" id="heading-<%= category.id %>">
         <h5 class="mb-0">
           <button class="btn text-dark text-decoration-none d-flex justify-content-between align-items-center w-100 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<%= category.id %>" aria-expanded="false" aria-controls="collapse-<%= category.id %>">
-            <%# Checkbox-style box color  %>
             <div class="me-2 mt-1" style="width: 20px; height: 20px; background-color: <%= category_colors[category.title] %>; border: 1px solid #ccc; border-radius: 4px;"></div>
-            <%# Checkbox-style box color  %>
-            <!-- Left side: icon -->
-            <span class="me-2" ><i class="fa-solid fa-angles-down fa-xs"></i></span>
+            <span class="me-2"><i class="fa-solid fa-angles-down fa-xs"></i></span>
             <span class="me-2"><strong><%= category.title %></strong></span>
-            <%# color displaying on the container small %>
-            <%# <p class="text-secondary text-opacity-25" style="background-color: = category_colors[category.title]"> ______ </p> %>
-            <%# color displaying on the container small %>
-            <!-- Right side: total sum -->
             <div class="d-flex ms-auto">
-              <%# color the text if it is over the budget or below the budget  %>
               <% if category.limit.nil? || category_total < (category.limit || 0) %>
-                <%# showing the limit %>
-                <p class="text-primary">¥<%= category_total %></p>
-              <% else category.limit.nil?%>
-                <p style="color: #FF5733;">¥<%= category_total %></p>
+                <p class="text-primary">¥<%= number_with_delimiter(category_total, delimiter: ",") %></p>
+              <% else %>
+                <p style="color: #FF5733;">¥<%= number_with_delimiter(category_total, delimiter: ",") %></p>
               <% end %>
             </div>
           </button>
@@ -63,7 +54,7 @@
           <% transactions.sort_by { |t| -t.amount }.each do |transaction| %>
             <div class="d-flex justify-content-between py-1">
               <div><%= transaction.description %></div>
-              <div>¥<%= transaction.amount %></div>
+              <div>¥<%= number_with_delimiter(transaction.amount, delimiter: ",") %></div>
             </div>
           <% end %>
         </div>
@@ -71,14 +62,13 @@
     </div>
   <% end %>
 </div>
-
+</div>
 <div class="w-100 d-flex justify-content-center">
   <div class="d-flex align-items-center justify-content-center mt-3 badge bg-primary text-wrap rounded-4 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLimit" aria-controls="offcanvasLimit">
     <h2 class="fs-3 m-0">Create a new Category <i class="fa-solid fa-circle-plus" style="color: #ffffffff;"></i></h2>
   </div>
 </div>
 </div>
-
 <%# NAV BAR %>
 </div>
 <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasLimit" aria-labelledby="offcanvasLimitLabel">
