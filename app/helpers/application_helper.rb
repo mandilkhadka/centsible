@@ -13,5 +13,4 @@ module ApplicationHelper
       "total"          => "Spent (all time):"
     }[range_key] || "Spent this month:"
   end
-
 end
