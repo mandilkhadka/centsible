@@ -26,5 +26,9 @@ Rails.application.routes.draw do
   patch "budget/:id", to: "categories#update", as: :update_budget_limit
 
   get 'budget/:id/edit', to: 'budgets#edit', as: 'edit_budget'
+  # config/routes.rb
+  post "chat_transactions/confirm", to: "chat_transactions#confirm", as: :confirm_chat_transaction
+  post "chat_transactions/dismiss", to: "chat_transactions#dismiss", as: :dismiss_chat_transaction
+
 
 end
