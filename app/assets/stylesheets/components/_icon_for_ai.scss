@@ -1,0 +1,8 @@
+.icon-hover i {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.icon-hover:hover i {
+  transform: scale(2);
+  color: #8BBF61; /* A brighter shade of green for hover */
+}

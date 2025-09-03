@@ -7,25 +7,31 @@
             required: true,
             label: false,
             input_html: { autofocus: true, data: { speech_to_text_target: "input" }, class: "form-control rounded-pill pe-5 bg-white" } %>
-      <!-- Send button inside the input -->
-      <button type="button" data-speech-to-text-target="button" data-action="click->speech-to-text#voiceinput">🎤 Speak</button>
       <%= f.button :button, class: "btn btn-success rounded-circle position-absolute end-0 top-50 translate-middle-y me-2" do %>
         <i class="fa-solid fa-arrow-up text-white"></i>
       </div>
+
+<div class="d-flex">
+      <!-- Send button inside the input -->
+      <label for="voice_input" class="ms-2 pe-4 icon-hover" style="cursor: pointer;" data-speech-to-text-target="button" data-action="click->speech-to-text#voiceinput">
+        <i class="fa-solid fa-microphone fa-xl" style="color: rgb(160, 187, 138);"></i>
+      </label>
       <!-- Hidden file input -->
       <%= f.input :file,
             as: :file,
             label: false,
             required: false,
             input_html: {
+              onchange: "this.form.requestSubmit()",
               class: "d-none",
               id: "file_upload_input",
               accept: "image/*",
-              capture: "environment" # or "user" for front-facing
             } %>
-      <label for="file_upload_input" class="ms-2" style="cursor: pointer;">
+      <label for="file_upload_input" class="ms-2 icon-hover" style="cursor: pointer;">
         <i class="fa-solid fa-camera fa-xl" style="color: rgb(160, 187, 138);"></i>
       </label>
+    </div>
+
     <% end %>
   </div>
   <!-- Camera icon (clickable) - just before input field -->
