@@ -87,4 +87,7 @@ gem "ostruct"
 gem "faker"
 gem "ruby_llm"
 gem "cloudinary"
-gem "image_processing", "~> 1.2" 
+gem "image_processing", "~> 1.2"
+
+# image loading in the chat screen
+gem "mini_magick"
