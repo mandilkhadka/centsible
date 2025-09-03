@@ -7,7 +7,9 @@
             required: true,
             label: false,
             input_html: { autofocus: true, data: { speech_to_text_target: "input" }, class: "form-control rounded-pill pe-5 bg-white" } %>
-      <%= f.button :button, class: "btn btn-success rounded-circle position-absolute end-0 top-50 translate-middle-y me-2" do %>
+      <!-- Send button inside the input -->
+      <button type="button" data-speech-to-text-target="button" data-action="click->speech-to-text#voiceinput">🎤 Speak</button>
+      <%= f.button :button, class: "btn btn-success rounded-circle custom-ai-btn translate-middle-y me-2" do %>
         <i class="fa-solid fa-arrow-up text-white"></i>
       </div>
 
