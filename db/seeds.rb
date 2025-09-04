@@ -53,6 +53,45 @@ def weekdays(range) = range.select { |d| (1..5).include?(d.wday) }
 def weekends(range) = range.select { |d| d.saturday? || d.sunday? }
 def randi(r) = r.is_a?(Range) ? rand(r).to_i : r
 
+# Builds a per-month plan of round deposits (10k/15k/20k/25k) that sums to target_total.
+# If target_total is small relative to months_count, some months will be 0.
+def build_round_deposit_plan(months_count:, target_total:, min: 10_000, max: 25_000)
+  step = 5_000
+  # If we can't even put min each month, start with zeros and fill up
+  if target_total < months_count * min
+    amounts = Array.new(months_count, 0)
+    remaining = target_total
+  else
+    amounts = Array.new(months_count, min)
+    remaining = target_total - months_count * min
+  end
+
+  # First distribute +10k blocks (faster to converge), cap at max
+  months_count.times do |i|
+    while remaining >= 10_000 && (amounts[i] + 10_000) <= max
+      amounts[i] += 10_000
+      remaining -= 10_000
+    end
+  end
+
+  # Then distribute +5k blocks, cap at max
+  loop do
+    changed = false
+    months_count.times do |i|
+      break if remaining < 5_000
+      if (amounts[i] + 5_000) <= max
+        amounts[i] += 5_000
+        remaining -= 5_000
+        changed = true
+      end
+    end
+    break unless changed
+    break if remaining < 5_000
+  end
+
+  amounts
+end
+
 # deterministic randomness (stable across the same day / SEED)
 today = Date.current
 seed = (ENV["SEED"] || today.strftime("%Y%m%d")).to_i
@@ -62,6 +101,7 @@ Faker::Config.random = Random.new(seed)
 # ---------- Date window: May 1 → today ----------
 start_date = Date.new(today.year, 5, 1)
 raise "This seed expects start in current year" unless start_date.year == today.year
+
 months = []
 d = start_date
 while d <= today
@@ -71,14 +111,26 @@ while d <= today
   d = m_first.next_month
 end
 
-# ---------- Savings goals (pre-existing piggy banks) ----------
+# ---------- Savings goals ----------
 puts "Creating savings goals…"
 savings_goals = [
   { title: "Emergency Fund", goal: 1_000_000 },
-  { title: "Travel Fund",    goal:   300_000 },
   { title: "New Laptop",     goal:   150_000 }
 ]
 piggy_banks = savings_goals.map { |attrs| user.savings.create!(attrs) }
+
+new_laptop = piggy_banks.find { |s| s.title == "New Laptop" }
+raise "New Laptop saving not found" unless new_laptop
+
+# Plan laptop deposits so total saved = exactly 80% of goal
+laptop_target_total = (new_laptop.goal * 0.80).to_i # e.g., 120_000
+laptop_plan = build_round_deposit_plan(
+  months_count: months.size,
+  target_total: laptop_target_total,
+  min: 10_000,
+  max: 25_000
+)
+# => array length == months.size with values in {0, 10k, 15k, 20k, 25k} that sum to laptop_target_total
 
 # ---------- Bill schedule (typical JP-ish amounts) ----------
 BILLS = {
@@ -96,7 +148,7 @@ clothes_done_for_window = false
 
 puts "Creating realistic transactions from #{start_date} to #{today}…"
 
-months.each do |range|
+months.each_with_index do |range, mi|
   m_first = range.first
   m_last  = range.last
   month_days = (m_first..m_last).to_a
@@ -119,13 +171,21 @@ months.each do |range|
              description: desc, amount: amt, date: date)
   end
 
-  # ---- Savings deposits: **round numbers only** (¥10k/¥15k/¥20k/¥25k) into EACH piggy bank, monthly ----
-  deposits_day = [[m_first + rand(2..6), m_last].min] # between the 3rd–7th; clamp
+  # ---- Savings deposits ----
+  # Each month: Emergency Fund gets a random round amount;
+  # New Laptop uses the pre-computed plan to reach exactly 80% overall.
+  deposits_day = [[m_first + rand(2..6), m_last].min] # between 3rd–7th; clamp to month end
   savings_total = 0
   round_choices = [10_000, 15_000, 20_000, 25_000]
+
   piggy_banks.each do |saving|
     date = deposits_day.first
-    amt  = round_choices.sample
+    amt  = if saving == new_laptop
+             laptop_plan[mi] # planned amount for this month
+           else
+             round_choices.sample
+           end
+    next if amt.to_i <= 0
     savings_total += amt
     add_txn!(user: user, categories: categories, title: "Savings",
              description: "Saving deposit", amount: amt, date: date, saving: saving)
@@ -144,10 +204,10 @@ months.each do |range|
   grocery_visits_target = [4, 5].sample
   grocery_days = grocery_weeks.flat_map { |w| w.sample(1) }.first(grocery_visits_target).sort
   grocery_total_planned = rand(38_000..55_000)
-  splits = Array.new(grocery_days.size, grocery_total_planned / grocery_days.size)
+  splits = Array.new(grocery_days.size, grocery_total_planned / [grocery_days.size, 1].max)
   splits.map!.with_index { |base, _i| (base * (0.9 + rand * 0.2)).round(-2) }
   diff = grocery_total_planned - splits.sum
-  splits[0] += diff
+  splits[0] = (splits[0] + diff) if splits.any?
   grocery_total = 0
   grocery_days.each_with_index do |d, i|
     amt = [splits[i], 1_200].max
@@ -246,7 +306,6 @@ months.each do |range|
 end
 
 # ---------- Seed a short, realistic chat history (3 messages each) ----------
-# Tip: created_at order matters since your UI orders by created_at.
 puts "Creating a short chat history…"
 now = Time.zone.now
 
@@ -301,4 +360,4 @@ Message.create!(
   created_at: now - 5.minutes, updated_at: now - 5.minutes
 )
 
-puts "Done! 🌱 Realistic last-3+ months, round-number piggy-bank deposits, and a seeded chat history."
+puts "Done! 🌱 Realistic May→today data, and 'New Laptop' seeded at exactly 80% so you can top up live."
