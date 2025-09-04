@@ -2,22 +2,23 @@
 #messages {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  // gap: .5rem;
   background: #fafafa;
-  padding: .75rem;
+  padding: .5rem;
   border-radius: 12px;
 }
 
 /* Base bubble */
 .chat-bubble {
   display: inline-block;
-  max-width: 75%; /* readable line length + cap width */
-  padding: .6rem .8rem;
+  max-width: 90%; /* readable line length + cap width */
+  padding: .8rem .8rem;
   border-radius: 16px;
   box-shadow: 0 2px 6px rgba(0,0,0,.06);
   line-height: 1.4;
   word-wrap: break-word;
   overflow-wrap: anywhere;
+  margin-top: .4rem;
 
   /* Markdown hygiene */
   p { margin: 0 0 .4rem; }
@@ -39,6 +40,7 @@
   color: #333;       /* white text works well here */
   border-top-left-radius: 4px;
   position: relative;
+
 }
 
 .custom-ai-btn {
