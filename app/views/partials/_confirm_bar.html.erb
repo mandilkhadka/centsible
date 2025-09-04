@@ -1,31 +1,56 @@
 <% if draft.present? %>
   <div class="box-size mt-3">
-    <div class="rounded-4 shadow p-3 bg-white d-flex justify-content-between align-items-start">
-      <div>
-        <div class="fw-bold">Confirm this transaction?</div>
-        <ul class="mb-2">
-          <li><strong>Amount:</strong> ¥<%= number_with_delimiter(draft["amount"].to_i) %></li>
-          <li><strong>Type:</strong> <%= draft["transaction_type"].to_s.capitalize %></li>
-          <li><strong>Date:</strong> <%= draft["date"] %></li>
-          <li><strong>Category:</strong> <%= draft["category_title"] %></li>
-          <li><strong>Description:</strong> <%= draft["description"] %></li>
+    <div class="rounded-4 shadow p-3 bg-white">
+      <!-- Details block -->
+      <div class="mb-3">
+        <div class="fw-bold mb-2">Confirm this transaction?</div>
+
+        <!-- flex rows so values use full width -->
+        <ul class="mb-0 list-unstyled">
+          <li class="d-flex flex-wrap align-items-baseline mb-1">
+            <strong class="me-2">Amount:</strong>
+            <span class="text-break">¥<%= number_with_delimiter(draft["amount"].to_i) %></span>
+          </li>
+
+          <li class="d-flex flex-wrap align-items-baseline mb-1">
+            <strong class="me-2">Type:</strong>
+            <span class="text-break"><%= draft["transaction_type"].to_s.capitalize %></span>
+          </li>
+
+          <li class="d-flex flex-wrap align-items-baseline mb-1">
+            <strong class="me-2">Date:</strong>
+            <span class="text-break"><%= draft["date"] %></span>
+          </li>
+
+          <li class="d-flex flex-wrap align-items-baseline mb-1">
+            <strong class="me-2">Category:</strong>
+            <span class="text-break"><%= draft["category_title"] %></span>
+          </li>
+
+          <li class="d-flex flex-wrap align-items-baseline">
+            <strong class="me-2">Description:</strong>
+            <!-- squish collapses newlines/extra spaces -->
+            <span class="flex-grow-1 text-break"><%= draft["description"].to_s.squish %></span>
+          </li>
         </ul>
       </div>
 
-      <div class="d-flex gap-2 align-items-start">
+      <!-- Actions pinned to bottom -->
+      <div class="d-flex justify-content-end gap-2 pt-3 border-top">
         <%= button_to "Confirm",
                       confirm_chat_transaction_path,
                       method: :post,
                       params: { payload: signed_draft },
-                      # Force top-level navigation after POST + redirect
-                      form: { data: { turbo: true, turbo_frame: "_top" } },
-                      class: "btn btn-success" %>
+                      form: { data: { turbo: true } },
+                      class: "btn btn-success",
+                      aria: { label: "Confirm transaction" } %>
 
         <%= button_to "Cancel",
                       dismiss_chat_transaction_path,
                       method: :post,
-                      form: { data: { turbo: true } },
-                      class: "btn btn-outline-secondary" %>
+                      form: { data: { turbo: true, turbo_confirm: "Discard this draft?" } },
+                      class: "btn btn-outline-danger",
+                      aria: { label: "Cancel and discard draft" } %>
       </div>
     </div>
   </div>
