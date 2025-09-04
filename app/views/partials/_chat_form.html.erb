@@ -1,39 +1,42 @@
 <div id="chat_dashboard" class="box-size p-0">
   <%= simple_form_for(user_message, html: { data: { controller: "speech-to-text" } }) do |f| %>
     <div class="position-relative my-4">
-      <%= f.input :content,
-            as: :string,
+      <!-- ChatGPT-style auto-resizing textarea -->
+      <%= f.text_area :content,
             placeholder: "Message..",
             required: true,
-            label: false,
-            input_html: { autofocus: true, data: { speech_to_text_target: "input" }, class: "form-control rounded-pill pe-5 bg-white" } %>
-      <!-- Send button inside the input -->
-      <%= f.button :button, class: "btn btn-success rounded-circle custom-ai-btn translate-middle-y me-2" do %>
-        <i class="fa-solid fa-arrow-up text-white"></i>
-      </div>
-
-<div class="d-flex">
-      <!-- Send button inside the input -->
-      <label for="voice_input" class="ms-2 pe-4 icon-hover" style="cursor: pointer;" data-speech-to-text-target="button" data-action="click->speech-to-text#voiceinput">
-        <i class="fa-solid fa-microphone fa-xl" style="color: rgb(160, 187, 138);"></i>
-      </label>
-      <!-- Hidden file input -->
-      <%= f.input :file,
-            as: :file,
-            label: false,
-            required: false,
-            input_html: {
-              onchange: "this.form.requestSubmit()",
+            autofocus: true,
+            rows: 1,
+            class: "form-control rounded-pill bg-white auto-expand",
+            style: "min-height:50px; max-height:120px; overflow:auto; padding-right:120px; padding-left:15px; padding-top:10px; padding-bottom:10px;",
+            data: { speech_to_text_target: "input" } %>
+      <!-- Buttons inside input -->
+      <div class="position-absolute end-0 top-50 translate-middle-y d-flex align-items-center gap-2 me-3">
+        <!-- Camera -->
+        <%= f.file_field :file,
               class: "d-none",
               id: "file_upload_input",
               accept: "image/*",
-            } %>
-      <label for="file_upload_input" class="ms-2 icon-hover" style="cursor: pointer;">
-        <i class="fa-solid fa-camera fa-xl" style="color: rgb(160, 187, 138);"></i>
-      </label>
+              onchange: "this.form.requestSubmit()" %>
+        <label for="file_upload_input" class="icon-hover" style="cursor:pointer;">
+          <i class="fa-solid fa-camera fa-lg mx-1" style="color: rgb(160, 187, 138);"></i>
+        </label>
+        <!-- Mic -->
+        <label for="voice_input"
+               class="icon-hover"
+               style="cursor:pointer;"
+               data-speech-to-text-target="button"
+               data-action="click->speech-to-text#voiceinput">
+          <i class="fa-solid fa-microphone fa-lg mx-1" style="color: rgb(160, 187, 138);"></i>
+        </label>
+        <!-- Send button -->
+        <%= f.button :button,
+              type: "submit",
+              class: "btn btn-success rounded-circle d-flex align-items-center justify-content-center mx-1",
+              style: "width:24px; height:24px;" do %>
+          <i class="fa-solid fa-arrow-up text-white"></i>
+        <% end %>
+      </div>
     </div>
-
-    <% end %>
-  </div>
-  <!-- Camera icon (clickable) - just before input field -->
-<% end %>
+  <% end %>
+</div>
