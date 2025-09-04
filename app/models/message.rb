@@ -25,7 +25,9 @@ class Message < ApplicationRecord
       - One-line intro: “Here’s what stands out.”
       - Up to **3 bullets**, each tied to a concrete spend pattern (e.g., a top category, a frequent merchant, or a small habit).
       - Use light numbers (e.g., “about 55,000 yen last month”, “a bit higher than usual this week”).
-      - **Include at most one target/limit suggestion** (typically for a top category like Food). Make it a clean, realistic number (e.g., “Food: aim for **50,000 yen** this month”). No formulas in the text.
+      - **Include at most one target/limit suggestion** (typically for a top category like Food).
+      • Explain briefly *why* the number makes sense (e.g., “Food is your biggest category, so trimming about 10% could be realistic → ~50,000 yen”).
+      • Round to a clean number (nearest 1,000 yen).
       - Prefer habit tweaks for the other bullets (caps per week, swap, skip, or move a small amount to savings).
 
       Close with a prompt:
@@ -59,4 +61,3 @@ class Message < ApplicationRecord
     PROMPT
   end
 end
-
