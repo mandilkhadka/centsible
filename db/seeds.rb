@@ -71,34 +71,44 @@ def split_total_random(total, n, min_per: 1200)
   amounts
 end
 
-# Build round-number (10k/15k/20k/25k) monthly deposits summing to a target
-def build_round_deposit_plan(months_count:, target_total:, min: 10_000, max: 25_000)
-  if target_total < months_count * min
-    amounts = Array.new(months_count, 0)
-    remaining = target_total
-  else
-    amounts = Array.new(months_count, min)
-    remaining = target_total - months_count * min
+# Build round-number monthly deposits that sum to a target, bounded by min/max
+def build_round_deposit_plan(months_count:, target_total:, min: 10_000, max: 40_000)
+  # amounts will be multiples of 5k between 0 and max
+  step = 5_000
+  target_total = (target_total / step) * step # force multiple of 5k
+
+  # start with zeros so we can keep Savings < Food per month
+  amounts = Array.new(months_count, 0)
+  remaining = target_total
+
+  # First pass: fill each month up to min (if we can)
+  i = 0
+  while remaining >= min && i < months_count
+    amounts[i] = min
+    remaining -= min
+    i += 1
   end
-  months_count.times do |i|
-    while remaining >= 10_000 && (amounts[i] + 10_000) <= max
-      amounts[i] += 10_000
+
+  # Distribute remaining in 10k blocks, then 5k, without exceeding max
+  months_count.times do |idx|
+    while remaining >= 10_000 && (amounts[idx] + 10_000) <= max
+      amounts[idx] += 10_000
       remaining -= 10_000
     end
   end
   loop do
     changed = false
-    months_count.times do |i|
-      break if remaining < 5_000
-      if (amounts[i] + 5_000) <= max
-        amounts[i] += 5_000
-        remaining -= 5_000
+    months_count.times do |idx|
+      break if remaining < step
+      if (amounts[idx] + step) <= max
+        amounts[idx] += step
+        remaining -= step
         changed = true
       end
     end
     break unless changed
-    break if remaining < 5_000
   end
+
   amounts
 end
 
@@ -108,8 +118,8 @@ seed = (ENV["SEED"] || today.strftime("%Y%m%d")).to_i
 srand(seed)
 Faker::Config.random = Random.new(seed)
 
-# ---------- Date window: May 1 → today ----------
-start_date = Date.new(today.year, 5, 1)
+# ---------- Date window: Jan 1 → today (gives enough months for the trip plan) ----------
+start_date = Date.new(today.year, 1, 1)
 raise "This seed expects start in current year" unless start_date.year == today.year
 
 months = []
@@ -123,23 +133,26 @@ end
 
 # ---------- Savings goals ----------
 puts "Creating savings goals…"
-TRIP_GOAL_YEN   = 400_000                         # adjust if you want
-TRIP_TARGET_PCT = 0.25                            # "a little bit already" (~25%)
+TRIP_GOAL_YEN      = 320_000                   # pick a realistic demo goal
+TRIP_LEFTOVER_YEN  = 20_000                    # "almost complete" → 20k left
+DOWNPAYMENT_GOAL   = 1_000_000                 # adjust if you like
+
 savings_goals = [
-  { title: "Emergency Fund",             goal: 1_000_000 },
-  { title: "Trip to France (Christmas)", goal: TRIP_GOAL_YEN }
+  { title: "Down payment for new appartment", goal: DOWNPAYMENT_GOAL },
+  { title: "Trip to France (Christmas)",      goal: TRIP_GOAL_YEN }
 ]
 piggy_banks = savings_goals.map { |attrs| user.savings.create!(attrs) }
 
 trip_fr = piggy_banks.find { |s| s.title == "Trip to France (Christmas)" }
 raise "Trip saving not found" unless trip_fr
 
-# Plan trip deposits to total ~25% of goal over the window (round numbers)
-trip_target_total = (trip_fr.goal * TRIP_TARGET_PCT).to_i
+# Plan trip deposits to total (goal - 20,000) over the whole window.
+# Cap per-month at 40k so Savings never beats Food (55k).
+trip_target_total = TRIP_GOAL_YEN - TRIP_LEFTOVER_YEN # multiple of 5k already
 trip_plan = build_round_deposit_plan(
   months_count: months.size,
   target_total: trip_target_total,
-  min: 10_000, max: 25_000
+  min: 10_000, max: 40_000
 )
 
 # ---------- Bill schedule (Utilities) ----------
@@ -229,21 +242,20 @@ months.each_with_index do |range, mi|
   # ------------------- end FOOD --------------------------------------
 
   # ---- Savings deposits ----
-  # Emergency Fund: random rounded monthly deposit
-  # Trip to France: follow planned amounts to reach ~25% by today
   deposits_day = [[m_first + rand(2..6), m_last].min] # between 3rd–7th; clamp
-  round_choices = [10_000, 15_000, 20_000, 25_000]
+  # Keep total Savings < Food: Trip plan per month (<=40k) + Down payment 5k–10k
+  down_payment_amt = [5_000, 10_000].sample
 
-  piggy_banks.each do |saving|
+  [*piggy_banks].each do |saving|
     date = deposits_day.first
     amt  = if saving == trip_fr
              trip_plan[mi]
            else
-             round_choices.sample
+             down_payment_amt
            end
     next if amt.to_i <= 0
     add_txn!(user: user, categories: categories, title: "Savings",
-             description: "Saving deposit", amount: amt, date: date, saving: saving)
+             description: "Saving deposit - #{saving.title}", amount: amt, date: date, saving: saving)
   end
 
   # ---- Health: 1–2 small pharmacy runs (¥900–3,000) ----
@@ -330,13 +342,13 @@ Message.create!(
 deposit_day = Date.current.change(day: [5, Date.current.day].min)
 Message.create!(
   user: user, role: "user",
-  content: "Add a savings deposit of 15,000 yen to my Travel Fund for this month.",
+  content: "Add a savings deposit of 15,000 yen to my Trip to France fund for this month.",
   created_at: now - 6.minutes, updated_at: now - 6.minutes
 )
 Message.create!(
   user: user, role: "assistant",
   content: <<~AI.strip,
-    Got it — here’s a draft deposit into your piggy bank.
+    Got it — here’s a draft deposit into your Trip to France fund.
 
     ```DRAFT_TX
     {"description":"Saving deposit","amount":15000,"transaction_type":"expense","date":"#{deposit_day}","category_title":"Savings"}
@@ -346,4 +358,4 @@ Message.create!(
   created_at: now - 5.minutes, updated_at: now - 5.minutes
 )
 
-puts "Done! 🌱 Food fixed at ~¥55k/mo (pro-rated this month), Utilities highest, Food second; Trip to France seeded to ~25% of goal in round monthly deposits; salary balances each month with a small surplus from ¥100k start."
+puts "Done! 🌱 Food fixed at ~¥55k/mo (pro-rated this month), Utilities highest, Food second; Trip to France seeded to goal–¥20k; salary balances each month from ¥100k start."
