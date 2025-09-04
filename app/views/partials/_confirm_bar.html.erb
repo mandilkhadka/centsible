@@ -4,32 +4,25 @@
       <!-- Details block -->
       <div class="mb-3">
         <div class="fw-bold mb-2">Confirm this transaction?</div>
-
-        <!-- flex rows so values use full width -->
         <ul class="mb-0 list-unstyled">
           <li class="d-flex flex-wrap align-items-baseline mb-1">
             <strong class="me-2">Amount:</strong>
             <span class="text-break">¥<%= number_with_delimiter(draft["amount"].to_i) %></span>
           </li>
-
           <li class="d-flex flex-wrap align-items-baseline mb-1">
             <strong class="me-2">Type:</strong>
             <span class="text-break"><%= draft["transaction_type"].to_s.capitalize %></span>
           </li>
-
           <li class="d-flex flex-wrap align-items-baseline mb-1">
             <strong class="me-2">Date:</strong>
             <span class="text-break"><%= draft["date"] %></span>
           </li>
-
           <li class="d-flex flex-wrap align-items-baseline mb-1">
             <strong class="me-2">Category:</strong>
             <span class="text-break"><%= draft["category_title"] %></span>
           </li>
-
           <li class="d-flex flex-wrap align-items-baseline">
             <strong class="me-2">Description:</strong>
-            <!-- squish collapses newlines/extra spaces -->
             <span class="flex-grow-1 text-break"><%= draft["description"].to_s.squish %></span>
           </li>
         </ul>
@@ -41,14 +34,14 @@
                       confirm_chat_transaction_path,
                       method: :post,
                       params: { payload: signed_draft },
-                      form: { data: { turbo: true } },
+                      form: { data: { turbo: true, turbo_frame: "_top" } },
                       class: "btn btn-success",
                       aria: { label: "Confirm transaction" } %>
 
         <%= button_to "Cancel",
                       dismiss_chat_transaction_path,
                       method: :post,
-                      form: { data: { turbo: true, turbo_confirm: "Discard this draft?" } },
+                      form: { data: { turbo: true, turbo_frame: "_top", turbo_confirm: "Discard this draft?" } },
                       class: "btn btn-outline-danger",
                       aria: { label: "Cancel and discard draft" } %>
       </div>
