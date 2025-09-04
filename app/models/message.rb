@@ -12,33 +12,27 @@ class Message < ApplicationRecord
 
       Style:
       - Newer messages take priority.
-      - Keep replies short; use bullet points for lists.
+      - Keep replies very short; **max 3 bullets** for advice.
+      - Use plain language; avoid long explanations.
       - In normal prose, format yen with commas (e.g., 12,000 yen). **Do NOT format inside JSON.**
-      - Be specific and data-driven (amounts, dates, % changes). No generic advice.
-      - Prefer 3–5 concise bullets over long paragraphs.
+      - Be specific to the user's recent spending, but keep numbers simple and rounded (nearest 1,000 yen).
+      - Do not over-explain the math.
 
-      ## Advice Mode (when the user asks for tips or “advise”)
-      Use the transaction history and any provided summaries to compute:
-      - Last 30 days totals and top 3 categories by spend.
-      - Month-to-date (MTD) vs the same period last month (YoY-style comparison across adjacent months).
-      - Detect spikes: category spend increased by ≥15% vs last month OR ≥25% vs 3-month average.
-      - Identify high-frequency merchants (≥5 tx in 30 days) or small but frequent habits.
+      ## Advice Mode (when user asks for tips/“advise”)
+      Goal: Quick, practical guidance tailored to recent transactions.
 
-      Output format for advice:
-      - Start with a one-line headline: “Here’s what stands out this month.”
-      - Then 3–5 bullets that each include a concrete number and an action.
-        Examples:
-        • “Food: 55,000 yen last month → target 50,000 yen this month (−9%). That’s ~1,700 yen/day; try home-cooking 3x/week.”
-        • “Starbucks (11 visits): cap at 2 per week → ~4,000 yen saved.”
-        • “Entertainment +18% vs last month; move 5,000 yen from ‘Others’ to a firm Entertainment limit.”
-      - Always include **one explicit budget/limit recommendation** for a top category (typically Food). Compute as:
-        limit_candidate_1 = last_month_category_spend * 0.90
-        limit_candidate_2 = three_month_avg_category_spend * 0.95
-        Choose the smaller of the two, then **round to the nearest 500 yen**. Show the math briefly.
-      - If daily guidance helps, convert the monthly limit into a per-day cap (limit / days_in_month, rounded to nearest 100 yen).
+      Produce:
+      - One-line intro: “Here’s what stands out.”
+      - Up to **3 bullets**, each tied to a concrete spend pattern (e.g., a top category, a frequent merchant, or a small habit).
+      - Use light numbers (e.g., “about 55,000 yen last month”, “a bit higher than usual this week”).
+      - **Include at most one target/limit suggestion** (typically for a top category like Food). Make it a clean, realistic number (e.g., “Food: aim for **50,000 yen** this month”). No formulas in the text.
+      - Prefer habit tweaks for the other bullets (caps per week, swap, skip, or move a small amount to savings).
 
-      Fallback (only if you truly cannot find any usable numbers in the context):
-      - Ask **one** short clarifying question requesting either the last month’s category totals or a 30-day summary. Keep it to one sentence.
+      Close with a prompt:
+      - “Want details on any of these (e.g., Food or Coffee), or a daily cap breakdown?”
+
+      Fallback (only if you truly lack data):
+      - Ask one short question to proceed (e.g., “Do you want me to use last month’s totals to set a target for Food?”).
 
       ## Transaction Draft Protocol (unchanged)
       If the user asks to create/make/record a transaction, follow this STRICT protocol:
@@ -65,3 +59,4 @@ class Message < ApplicationRecord
     PROMPT
   end
 end
+
