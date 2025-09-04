@@ -68,7 +68,7 @@
                 <div><%= transaction.category&.title %></div>
               </div>
               <div class="col-4 text-end">
-                <div class="<%= transaction.amount.to_f < 0 ? 'text-danger' : 'text-success' %>">
+                <div class="<%= transaction.amount.to_f %>">
                   <%= number_to_currency(transaction.amount, unit: "¥", precision: 0, delimiter: ",") %>
                 </div>
               </div>
@@ -98,7 +98,7 @@
                 <div><%= transaction.category&.title %></div>
               </div>
               <div class="col-4 text-end">
-                <div class="text-success">
+                <div>
                   <%= number_to_currency(transaction.amount, unit: "¥", precision: 0, delimiter: ",") %>
                 </div>
               </div>
