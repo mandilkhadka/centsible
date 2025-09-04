@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  static targets = ["list"]
   connect() {
     setTimeout(() => {
     this.scrollToBottom();
@@ -9,6 +10,17 @@ export default class extends Controller {
   }
 
   scrollToBottom = () => {
-    window.scrollTo(0, document.body.scrollHeight)
+    // this.listTarget.scrollTop = this.listTarget.scrollHeight
+    window.scrollTo(0, this.listTarget.scrollHeight)
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".auto-expand").forEach(textarea => {
+    const maxHeight = 120; // matches CSS max-height
+    textarea.addEventListener("input", () => {
+      textarea.style.height = "auto";
+      textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + "px";
+    });
+  });
+});

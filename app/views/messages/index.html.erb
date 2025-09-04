@@ -1,10 +1,9 @@
 <!-- app/views/messages/index.html.erb -->
 <div id="messages-container" data-controller="messages">
-  <div id="messages" class="box-size rounded-5 bg-white mb-2 pb-1">
+  <div id="messages" class="box-size rounded-5 bg-white mb-2 pb-1" data-messages-target="list">
     <%= render partial: "partials/message", collection: @messages, as: :message %>
   </div>
 </div>
-
 <turbo-frame id="confirm_bar">
   <%= render "partials/confirm_bar", draft: nil, signed_draft: nil %>
 </turbo-frame>

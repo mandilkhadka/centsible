@@ -32,28 +32,6 @@
     </div>
   </div>
 </div>
-<!-- | -->
-<!-- | -->
-<!-- AI CHAT FORM -->
-<!-- | -->
-<div id="chat_dashboard" class="box-size p-0">
-  <%= simple_form_for @user_message, html: { data: {turbo: false} } do |f| %>
-    <div class="position-relative my-4">
-      <%= f.input :content,
-            as: :string,
-            placeholder: "Chat with Centi",
-            required: true,
-            label: false,
-            input_html: { class: "form-control rounded-pill pe-5 bg-white" } %>
-      <!-- Send button inside the input -->
-      <%= f.button :button, class: "btn btn-success rounded-circle position-absolute top-50 translate-middle-y me-2 end-0" do %>
-        <i class="fa-solid fa-arrow-up text-white"></i>
-      <% end %>
-    </div>
-  <% end %>
-</div>
-<!-- | -->
-<!-- | -->
 <!-- CREATE TRANSACTION FORM -->
 <!-- | -->
 <div id="create_transaction_form" class="box-size rounded-5 shadow-sm p-3 mb-4 bg-secondary">

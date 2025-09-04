@@ -1,18 +1,27 @@
 <%= simple_form_for transaction do |f| %>
   <%= f.input :transaction_type, as: :hidden, input_html: { value: expense ? "expense" : "income" } %>
   <%= f.input :description, placeholder: "Items", label: false, input_html: { class: "my-4" } %>
-  <%= f.input :amount, as: :integer, step: 1_000,  placeholder: "Price",  label: false, input_html: { min: "0" } %>
-  <% if expense  %>
+  <%= f.input :amount, as: :integer, step: 1_000, placeholder: "Price", label: false, input_html: { min: "0" } %>
+  <% if expense %>
     <%= f.association :category, collection: Category.where.not(title: "Income"), prompt: "Select a Category", required: true, label: false, input_html: { class: "my-4" } %>
   <% end %>
   <%= f.input :date, as: :date, required: true, label: false, input_html: { class: "my-4" } %>
-  <div class="text-center">
-    <%= f.button :button, class: "btn btn-primary text-white rounded-5" do %>
+  <div class="d-flex justify-content-center align-items-center gap-3">
+    <!-- Camera button -->
+    <button type="button" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+      <i class="fa-solid fa-camera text-white"></i>
+    </button>
+    <!-- Main Save button -->
+    <%= f.button :submit, class: "btn btn-primary text-white rounded-5 px-4 py-2" do %>
       <% if expense %>
         <i class="fa-solid fa-coins me-1"></i> Save Expense
       <% else %>
         <i class="fa-solid fa-coins me-1"></i> Save Income
       <% end %>
     <% end %>
+    <!-- Mic button -->
+    <button type="button" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+      <i class="fa-solid fa-microphone text-white"></i>
+    </button>
   </div>
 <% end %>
