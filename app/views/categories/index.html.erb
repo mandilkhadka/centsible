@@ -47,7 +47,7 @@
             <span class="me-2"><strong><%= category.title %></strong></span>
             <div class="d-flex ms-auto">
               <% if category.limit.nil? || category_total < (category.limit || 0) %>
-                <p class="text-primary">¥<%= number_with_delimiter(category_total, delimiter: ",") %></p>
+                <p >¥<%= number_with_delimiter(category_total, delimiter: ",") %></p>
               <% else %>
                 <p style="color: #FF5733;">¥<%= number_with_delimiter(category_total, delimiter: ",") %></p>
               <% end %>
