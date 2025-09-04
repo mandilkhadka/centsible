@@ -46,16 +46,16 @@ class CategoriesController < ApplicationController
     @category = Category.find(params[:id])
   end
 
-def update
-  @category = Category.find(params[:id])
+  def update
+    @category = Category.find(params[:id])
 
 
-  if @category.update(category_params)
-    redirect_to budget_path, notice: "Category limit updated!"
-  else
-    redirect_to budget_path, alert: "Failed to update category limit."
+    if @category.update(category_params)
+      redirect_to budget_path, notice: "Category limit updated!"
+    else
+      redirect_to budget_path, alert: "Failed to update category limit."
+    end
   end
-end
 
   private
 
