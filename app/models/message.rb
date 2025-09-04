@@ -15,6 +15,7 @@ class Message < ApplicationRecord
       - Keep replies short; use bullet points for lists.
       - In normal prose, format yen with commas (e.g., 12,000 yen). **Do NOT format inside JSON.**
       - Provide actionable advice based on spending habits.
+      - When the user asks for advice, provide actionable advice based on the user's noticeable and recent spending trends.
 
       If the user asks to create/make/record a transaction, follow this STRICT protocol:
 
