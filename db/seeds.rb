@@ -2,9 +2,6 @@
 require "faker"
 require "date"
 
-# If your app config doesn’t set it, uncomment for local dev:
-# Time.zone = "Asia/Tokyo"
-
 puts "Cleaning up…"
 Transaction.delete_all
 Saving.delete_all if defined?(Saving)
@@ -17,7 +14,7 @@ user = User.create!(
   name: "Test User",
   email: "test@test.com",
   password: "123123",
-  starting_balance: 750_000
+  starting_balance: 100_000 # <<< lower starting amount
 )
 
 # ---------- Categories ----------
@@ -29,7 +26,7 @@ TITLES = [
   "Shopping",      # clothes & small non-grocery purchases
   "Health",        # pharmacy, clinic
   "Savings",       # deposits into piggy banks (expense)
-  "Others"         # filler/misc to balance budgets
+  "Others"         # filler/misc kept minimal
 ]
 categories = TITLES.index_with { |t| user.categories.create!(title: t) }
 
@@ -49,46 +46,28 @@ end
 # ---------- Helpers ----------
 def month_first(d) = Date.new(d.year, d.month, 1)
 def month_last(d)  = (month_first(d).next_month - 1)
-def weekdays(range) = range.select { |d| (1..5).include?(d.wday) }
-def weekends(range) = range.select { |d| d.saturday? || d.sunday? }
+def weekdays(days) = days.select { |dt| (1..5).include?(dt.wday) }
+def weekends(days) = days.select { |dt| dt.saturday? || dt.sunday? }
 def randi(r) = r.is_a?(Range) ? rand(r).to_i : r
 
-# Builds a per-month plan of round deposits (10k/15k/20k/25k) that sums to target_total.
-# If target_total is small relative to months_count, some months will be 0.
-def build_round_deposit_plan(months_count:, target_total:, min: 10_000, max: 25_000)
-  step = 5_000
-  # If we can't even put min each month, start with zeros and fill up
-  if target_total < months_count * min
-    amounts = Array.new(months_count, 0)
-    remaining = target_total
-  else
-    amounts = Array.new(months_count, min)
-    remaining = target_total - months_count * min
+# split a total across n days with a minimum per day and light randomness; rounds to ¥100
+def split_total_random(total, n, min_per: 1200)
+  return [] if n <= 0 || total <= 0
+  base = Array.new(n, min_per)
+  remaining = total - n * min_per
+  if remaining < 0
+    base[0] = total
+    return base
   end
-
-  # First distribute +10k blocks (faster to converge), cap at max
-  months_count.times do |i|
-    while remaining >= 10_000 && (amounts[i] + 10_000) <= max
-      amounts[i] += 10_000
-      remaining -= 10_000
-    end
+  weights = Array.new(n) { rand(0.7..1.3) }
+  sumw = weights.sum
+  amounts = base.each_with_index.map { |b, i| (b + remaining * (weights[i] / sumw)).round(-2) }
+  diff = total - amounts.sum
+  if diff != 0
+    idxs = (0...n).to_a
+    idxs.sample(diff.abs).each { |i| amounts[i] += (diff.positive? ? 100 : -100) }
   end
-
-  # Then distribute +5k blocks, cap at max
-  loop do
-    changed = false
-    months_count.times do |i|
-      break if remaining < 5_000
-      if (amounts[i] + 5_000) <= max
-        amounts[i] += 5_000
-        remaining -= 5_000
-        changed = true
-      end
-    end
-    break unless changed
-    break if remaining < 5_000
-  end
-
+  amounts.map! { |a| [a, min_per].max }
   amounts
 end
 
@@ -118,19 +97,47 @@ savings_goals = [
   { title: "New Laptop",     goal:   150_000 }
 ]
 piggy_banks = savings_goals.map { |attrs| user.savings.create!(attrs) }
-
 new_laptop = piggy_banks.find { |s| s.title == "New Laptop" }
 raise "New Laptop saving not found" unless new_laptop
 
-# Plan laptop deposits so total saved = exactly 80% of goal
-laptop_target_total = (new_laptop.goal * 0.80).to_i # e.g., 120_000
+# Plan laptop deposits so total saved = exactly 80% of goal across the window
+def build_round_deposit_plan(months_count:, target_total:, min: 10_000, max: 25_000)
+  if target_total < months_count * min
+    amounts = Array.new(months_count, 0)
+    remaining = target_total
+  else
+    amounts = Array.new(months_count, min)
+    remaining = target_total - months_count * min
+  end
+  months_count.times do |i|
+    while remaining >= 10_000 && (amounts[i] + 10_000) <= max
+      amounts[i] += 10_000
+      remaining -= 10_000
+    end
+  end
+  loop do
+    changed = false
+    months_count.times do |i|
+      break if remaining < 5_000
+      if (amounts[i] + 5_000) <= max
+        amounts[i] += 5_000
+        remaining -= 5_000
+        changed = true
+      end
+    end
+    break unless changed
+    break if remaining < 5_000
+  end
+  amounts
+end
+
+laptop_target_total = (new_laptop.goal * 0.80).to_i # e.g., 120,000 for 150k goal
 laptop_plan = build_round_deposit_plan(
   months_count: months.size,
   target_total: laptop_target_total,
   min: 10_000,
   max: 25_000
 )
-# => array length == months.size with values in {0, 10k, 15k, 20k, 25k} that sum to laptop_target_total
 
 # ---------- Bill schedule (typical JP-ish amounts) ----------
 BILLS = {
@@ -143,7 +150,7 @@ BILLS = {
   "Streaming sub" => { amount: 900..1_500,     due: 5  }
 }
 
-# We’ll allow a single clothes purchase across the whole range (rare).
+# We’ll allow a single clothes purchase across the whole window (rare).
 clothes_done_for_window = false
 
 puts "Creating realistic transactions from #{start_date} to #{today}…"
@@ -152,46 +159,30 @@ months.each_with_index do |range, mi|
   m_first = range.first
   m_last  = range.last
   month_days = (m_first..m_last).to_a
+  full_month = (m_last == month_last(m_first))
+  days_elapsed   = month_days.size
+  days_in_month  = month_last(m_first).day
+  salary_day     = Date.new(m_first.year, m_first.month, 1) # we’ll insert AFTER expenses
 
-  # ---- Income (1st of month) ----
-  salary_day = Date.new(m_first.year, m_first.month, 1)
-  salary_amt = rand(350_000..400_000)
-  add_txn!(user: user, categories: categories, title: "Income",
-           description: "Monthly salary", amount: salary_amt, date: salary_day, type: "income")
-
-  # ---- Fixed bills (post only if due date <= month end) ----
-  fixed_total = 0
+  # ---- Utilities (largest category) ----
   BILLS.each do |desc, cfg|
     due = [cfg[:due], month_last(m_first).day].min
     date = Date.new(m_first.year, m_first.month, due)
     next if date > m_last
     amt = randi(cfg[:amount])
-    fixed_total += amt
     add_txn!(user: user, categories: categories, title: "Utilities",
              description: desc, amount: amt, date: date)
   end
 
-  # ---- Savings deposits ----
-  # Each month: Emergency Fund gets a random round amount;
-  # New Laptop uses the pre-computed plan to reach exactly 80% overall.
-  deposits_day = [[m_first + rand(2..6), m_last].min] # between 3rd–7th; clamp to month end
-  savings_total = 0
-  round_choices = [10_000, 15_000, 20_000, 25_000]
+  # ---------------------- FOOD: lock the total ------------------------
+  # Target = ¥55,000 for full months; pro-rate for current month
+  food_target = if full_month
+                  55_000
+                else
+                  ((55_000 * (days_elapsed.to_f / days_in_month)).round(-2)).to_i
+                end
 
-  piggy_banks.each do |saving|
-    date = deposits_day.first
-    amt  = if saving == new_laptop
-             laptop_plan[mi] # planned amount for this month
-           else
-             round_choices.sample
-           end
-    next if amt.to_i <= 0
-    savings_total += amt
-    add_txn!(user: user, categories: categories, title: "Savings",
-             description: "Saving deposit", amount: amt, date: date, saving: saving)
-  end
-
-  # ---- Coffee: Starbucks each weekday (¥540) ----
+  # Coffee: one per weekday (¥540)
   coffee_days = weekdays(month_days)
   coffee_days.each do |d|
     add_txn!(user: user, categories: categories, title: "Food",
@@ -199,117 +190,115 @@ months.each_with_index do |range, mi|
   end
   coffee_total = coffee_days.size * 540
 
-  # ---- Groceries: 4–5 times/mo, realistic totals ----
-  grocery_weeks = month_days.group_by(&:cweek).values
-  grocery_visits_target = [4, 5].sample
-  grocery_days = grocery_weeks.flat_map { |w| w.sample(1) }.first(grocery_visits_target).sort
-  grocery_total_planned = rand(38_000..55_000)
-  splits = Array.new(grocery_days.size, grocery_total_planned / [grocery_days.size, 1].max)
-  splits.map!.with_index { |base, _i| (base * (0.9 + rand * 0.2)).round(-2) }
-  diff = grocery_total_planned - splits.sum
-  splits[0] = (splits[0] + diff) if splits.any?
-  grocery_total = 0
-  grocery_days.each_with_index do |d, i|
-    amt = [splits[i], 1_200].max
-    grocery_total += amt
-    add_txn!(user: user, categories: categories, title: "Food",
-             description: ["Supermarket", "Discount grocery", "Bulk store"].sample,
-             amount: amt, date: d)
+  # Eating out
+  weekend_pool = weekends(month_days)
+  eatout_count = if full_month
+                   rand(3..6)
+                 else
+                   [[(6.0 * days_elapsed / days_in_month).round, 1].max, weekend_pool.size].min
+                 end
+  eatout_days = weekend_pool.sample(eatout_count).sort
+  eatout_amounts = eatout_days.map { rand(900..2_400) }
+  eatout_total = eatout_amounts.sum
+
+  # Ensure groceries budget remains feasible
+  grocery_visits = full_month ? rand(4..5) : [[(5.0 * days_elapsed / days_in_month).ceil, 1].max, 5].min
+  min_grocery_total = grocery_visits * 1_200
+  while (food_target - coffee_total - eatout_total) < min_grocery_total && eatout_days.any?
+    removed = eatout_amounts.pop
+    eatout_days.pop
+    eatout_total -= removed
   end
 
-  # ---- Eating out: 3–6 weekend meals (¥900–2,400) ----
-  eatout_days = weekends(month_days).sample(rand(3..6)).sort
-  eatout_total = 0
-  eatout_days.each do |d|
-    amt = rand(900..2_400)
-    eatout_total += amt
+  # Groceries split to hit target
+  grocery_total = food_target - coffee_total - eatout_total
+  grocery_total = [grocery_total, min_grocery_total].max
+  grocery_days = month_days.group_by(&:cweek).values.map { |w| w.sample(1) }.flatten
+  grocery_days = grocery_days.first(grocery_visits).sort
+  grocery_amounts = split_total_random(grocery_total, grocery_days.size, min_per: 1_200)
+
+  # Create eating out & groceries txns
+  eatout_days.each_with_index do |d, i|
     add_txn!(user: user, categories: categories, title: "Food",
              description: ["Ramen", "Izakaya", "Sushi train", "Curry", "Bento"].sample,
-             amount: amt, date: d)
+             amount: eatout_amounts[i], date: d)
+  end
+  grocery_days.each_with_index do |d, i|
+    add_txn!(user: user, categories: categories, title: "Food",
+             description: ["Supermarket", "Discount grocery", "Bulk store"].sample,
+             amount: grocery_amounts[i], date: d)
+  end
+  # ------------------- end FOOD --------------------------------------
+
+  # ---- Savings deposits (stay < Food; Laptop follows plan) ----
+  deposits_day = [[m_first + rand(2..6), m_last].min] # between 3rd–7th; clamp
+  round_choices = [10_000, 15_000, 20_000, 25_000]
+
+  piggy_banks.each do |saving|
+    date = deposits_day.first
+    amt  = (saving == new_laptop) ? laptop_plan[mi] : round_choices.sample
+    next if amt.to_i <= 0
+    add_txn!(user: user, categories: categories, title: "Savings",
+             description: "Saving deposit", amount: amt, date: date, saving: saving)
   end
 
   # ---- Health: 1–2 small pharmacy runs (¥900–3,000) ----
-  health_days = month_days.sample(rand(1..2)).sort
-  health_total = 0
-  health_days.each do |d|
-    amt = rand(900..3_000)
-    health_total += amt
+  month_days.sample(rand(1..2)).sort.each do |d|
     add_txn!(user: user, categories: categories, title: "Health",
              description: ["Pharmacy", "Vitamins"].sample,
-             amount: amt, date: d)
+             amount: rand(900..3_000), date: d)
   end
 
-  # ---- Entertainment: 2–4 items (¥700–3,000), occasional 1 bigger (¥5,000–10,000) ----
+  # ---- Entertainment: 2–4 items (¥700–3,000), optional bigger (¥5,000–10,000) ----
   ent_days = month_days.sample(rand(2..4)).sort
-  ent_total = 0
   ent_days.each do |d|
-    amt = rand(700..3_000)
-    ent_total += amt
     add_txn!(user: user, categories: categories, title: "Entertainment",
              description: ["Cinema", "Karaoke", "Arcade", "Museum"].sample,
-             amount: amt, date: d)
+             amount: rand(700..3_000), date: d)
   end
-  if rand < 0.35 && m_last >= m_first + 10
+  if rand < 0.35 && (m_last - m_first) >= 10
     d = (m_first+5..m_last-2).to_a.sample
-    big = rand(5_000..10_000)
-    ent_total += big
     add_txn!(user: user, categories: categories, title: "Entertainment",
              description: ["Concert ticket", "Theme park day"].sample,
-             amount: big, date: d)
+             amount: rand(5_000..10_000), date: d)
   end
 
-  # ---- Shopping: very occasional clothes (once across whole window), plus small items ----
-  shopping_total = 0
+  # ---- Shopping: rare clothes + a few small items ----
   if !clothes_done_for_window && rand < 0.4
     d = month_days.sample
-    amt = 3_000
-    shopping_total += amt
-    clothes_done_for_window = true
     add_txn!(user: user, categories: categories, title: "Shopping",
-             description: "Clothes", amount: amt, date: d)
+             description: "Clothes", amount: 3_000, date: d)
+    clothes_done_for_window = true
   end
   month_days.sample(rand(2..4)).sort.each do |d|
-    amt = rand(500..2_000)
-    shopping_total += amt
     add_txn!(user: user, categories: categories, title: "Shopping",
              description: ["Stationery", "Home goods", "Gift"].sample,
-             amount: amt, date: d)
+             amount: rand(500..2_000), date: d)
   end
 
-  # ---- Balance the month so not much left (include savings_total) ----
-  fixed_and_planned = fixed_total + savings_total + coffee_total + grocery_total + eatout_total + health_total + ent_total + shopping_total
-  target_leftover = [0, 5_000, 10_000, 15_000, 20_000].sample
-  target_spend = salary_amt - target_leftover
+  # -------------------- Income LAST: balance month --------------------
+  # Make salary = this month's expenses + small surplus, so available balance
+  # only grows a little each month.
+  month_expense_total = user.transactions
+                           .where(date: m_first..m_last, transaction_type: "expense")
+                           .sum(:amount)
 
-  if target_spend > fixed_and_planned
-    top_up = target_spend - fixed_and_planned
-    parts = if top_up > 10_000
-              [ (top_up * 0.55).round(-2), (top_up * 0.45).round(-2) ]
+  surplus = if full_month
+              rand(3_000..12_000) # typical surplus per full month
             else
-              [ top_up.round(-2) ]
+              # smaller surplus early in the month
+              rand(1_000..6_000)
             end
-    days = [m_last - 1, m_last - 3, m_last - 5].select { |d| d >= m_first }.sample(parts.size)
-    parts.each_with_index do |amt, i|
-      add_txn!(user: user, categories: categories, title: "Others",
-               description: ["Miscellaneous & fees", "Cash top-up & small stuff"].sample,
-               amount: [amt, 500].max, date: days[i] || m_last)
-    end
-  else
-    overshoot = fixed_and_planned - target_spend
-    if overshoot > 0
-      refund = [overshoot, rand(1_000..5_000)].min.round(-2)
-      add_txn!(user: user, categories: categories, title: "Income",
-               description: ["Refund", "Cashback"].sample,
-               amount: refund, date: [m_first + 20, m_last].min, type: "income")
-    end
-  end
+
+  salary_amt = month_expense_total + surplus
+  add_txn!(user: user, categories: categories, title: "Income",
+           description: "Monthly salary", amount: salary_amt, date: salary_day, type: "income")
+  # -------------------------------------------------------------------
 end
 
-# ---------- Seed a short, realistic chat history (3 messages each) ----------
+# ---------- Seed a short, realistic chat history ----------
 puts "Creating a short chat history…"
 now = Time.zone.now
-
-# 1) User asks to log a coffee
 Message.create!(
   user: user, role: "user",
   content: "Can you log a coffee I bought at Starbucks today for 540 yen?",
@@ -327,8 +316,6 @@ Message.create!(
   AI
   created_at: now - 9.minutes, updated_at: now - 9.minutes
 )
-
-# 2) User asks for last month's coffee spend
 Message.create!(
   user: user, role: "user",
   content: "How much did I spend on coffee last month?",
@@ -339,9 +326,7 @@ Message.create!(
   content: "- You averaged one Starbucks coffee per weekday.\n- Estimated total last month: around 11,000–13,000 yen.\n- Tip: brewing at home 2 days/week could save ~4,000 yen/month.",
   created_at: now - 7.minutes, updated_at: now - 7.minutes
 )
-
-# 3) User requests a savings deposit
-deposit_day = Date.current.change(day: [5, Date.current.day].min) # early month; clamp to today if earlier
+deposit_day = Date.current.change(day: [5, Date.current.day].min)
 Message.create!(
   user: user, role: "user",
   content: "Add a savings deposit of 15,000 yen to my Travel Fund for this month.",
@@ -360,4 +345,4 @@ Message.create!(
   created_at: now - 5.minutes, updated_at: now - 5.minutes
 )
 
-puts "Done! 🌱 Realistic May→today data, and 'New Laptop' seeded at exactly 80% so you can top up live."
+puts "Done! 🌱 Food fixed at ~¥55k/mo (pro-rated this month), Utilities highest, Food second; salary balances each month with a small surplus so available balance rises slowly from ¥100k."
