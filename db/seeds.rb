@@ -14,19 +14,19 @@ user = User.create!(
   name: "Test User",
   email: "test@test.com",
   password: "123123",
-  starting_balance: 100_000 # <<< lower starting amount
+  starting_balance: 100_000
 )
 
 # ---------- Categories ----------
 TITLES = [
   "Income",
-  "Food",          # groceries, coffee, eating out
-  "Utilities",     # rent, bills
-  "Entertainment", # movies, karaoke, etc.
-  "Shopping",      # clothes & small non-grocery purchases
-  "Health",        # pharmacy, clinic
-  "Savings",       # deposits into piggy banks (expense)
-  "Others"         # filler/misc kept minimal
+  "Food",
+  "Utilities",
+  "Entertainment",
+  "Shopping",
+  "Health",
+  "Savings",  # deposits into piggy banks (expense)
+  "Others"
 ]
 categories = TITLES.index_with { |t| user.categories.create!(title: t) }
 
@@ -50,7 +50,7 @@ def weekdays(days) = days.select { |dt| (1..5).include?(dt.wday) }
 def weekends(days) = days.select { |dt| dt.saturday? || dt.sunday? }
 def randi(r) = r.is_a?(Range) ? rand(r).to_i : r
 
-# split a total across n days with a minimum per day and light randomness; rounds to ¥100
+# Split a total across n days with light randomness; amounts rounded to ¥100
 def split_total_random(total, n, min_per: 1200)
   return [] if n <= 0 || total <= 0
   base = Array.new(n, min_per)
@@ -71,36 +71,7 @@ def split_total_random(total, n, min_per: 1200)
   amounts
 end
 
-# deterministic randomness (stable across the same day / SEED)
-today = Date.current
-seed = (ENV["SEED"] || today.strftime("%Y%m%d")).to_i
-srand(seed)
-Faker::Config.random = Random.new(seed)
-
-# ---------- Date window: May 1 → today ----------
-start_date = Date.new(today.year, 5, 1)
-raise "This seed expects start in current year" unless start_date.year == today.year
-
-months = []
-d = start_date
-while d <= today
-  m_first = Date.new(d.year, d.month, 1)
-  m_last  = [month_last(m_first), today].min
-  months << (m_first..m_last)
-  d = m_first.next_month
-end
-
-# ---------- Savings goals ----------
-puts "Creating savings goals…"
-savings_goals = [
-  { title: "Emergency Fund", goal: 1_000_000 },
-  { title: "New Laptop",     goal:   150_000 }
-]
-piggy_banks = savings_goals.map { |attrs| user.savings.create!(attrs) }
-new_laptop = piggy_banks.find { |s| s.title == "New Laptop" }
-raise "New Laptop saving not found" unless new_laptop
-
-# Plan laptop deposits so total saved = exactly 80% of goal across the window
+# Build round-number (10k/15k/20k/25k) monthly deposits summing to a target
 def build_round_deposit_plan(months_count:, target_total:, min: 10_000, max: 25_000)
   if target_total < months_count * min
     amounts = Array.new(months_count, 0)
@@ -131,15 +102,47 @@ def build_round_deposit_plan(months_count:, target_total:, min: 10_000, max: 25_
   amounts
 end
 
-laptop_target_total = (new_laptop.goal * 0.80).to_i # e.g., 120,000 for 150k goal
-laptop_plan = build_round_deposit_plan(
+# deterministic randomness (stable across same day / SEED)
+today = Date.current
+seed = (ENV["SEED"] || today.strftime("%Y%m%d")).to_i
+srand(seed)
+Faker::Config.random = Random.new(seed)
+
+# ---------- Date window: May 1 → today ----------
+start_date = Date.new(today.year, 5, 1)
+raise "This seed expects start in current year" unless start_date.year == today.year
+
+months = []
+d = start_date
+while d <= today
+  m_first = Date.new(d.year, d.month, 1)
+  m_last  = [month_last(m_first), today].min
+  months << (m_first..m_last)
+  d = m_first.next_month
+end
+
+# ---------- Savings goals ----------
+puts "Creating savings goals…"
+TRIP_GOAL_YEN   = 400_000                         # adjust if you want
+TRIP_TARGET_PCT = 0.25                            # "a little bit already" (~25%)
+savings_goals = [
+  { title: "Emergency Fund",             goal: 1_000_000 },
+  { title: "Trip to France (Christmas)", goal: TRIP_GOAL_YEN }
+]
+piggy_banks = savings_goals.map { |attrs| user.savings.create!(attrs) }
+
+trip_fr = piggy_banks.find { |s| s.title == "Trip to France (Christmas)" }
+raise "Trip saving not found" unless trip_fr
+
+# Plan trip deposits to total ~25% of goal over the window (round numbers)
+trip_target_total = (trip_fr.goal * TRIP_TARGET_PCT).to_i
+trip_plan = build_round_deposit_plan(
   months_count: months.size,
-  target_total: laptop_target_total,
-  min: 10_000,
-  max: 25_000
+  target_total: trip_target_total,
+  min: 10_000, max: 25_000
 )
 
-# ---------- Bill schedule (typical JP-ish amounts) ----------
+# ---------- Bill schedule (Utilities) ----------
 BILLS = {
   "Rent"          => { amount: 80_000,         due: 1  },
   "Electric bill" => { amount: 5_500..9_000,   due: 12 },
@@ -159,17 +162,17 @@ months.each_with_index do |range, mi|
   m_first = range.first
   m_last  = range.last
   month_days = (m_first..m_last).to_a
-  full_month = (m_last == month_last(m_first))
+  full_month     = (m_last == month_last(m_first))
   days_elapsed   = month_days.size
   days_in_month  = month_last(m_first).day
-  salary_day     = Date.new(m_first.year, m_first.month, 1) # we’ll insert AFTER expenses
+  salary_day     = Date.new(m_first.year, m_first.month, 1) # insert AFTER expenses
 
   # ---- Utilities (largest category) ----
   BILLS.each do |desc, cfg|
-    due = [cfg[:due], month_last(m_first).day].min
+    due  = [cfg[:due], month_last(m_first).day].min
     date = Date.new(m_first.year, m_first.month, due)
     next if date > m_last
-    amt = randi(cfg[:amount])
+    amt  = randi(cfg[:amount])
     add_txn!(user: user, categories: categories, title: "Utilities",
              description: desc, amount: amt, date: date)
   end
@@ -192,16 +195,12 @@ months.each_with_index do |range, mi|
 
   # Eating out
   weekend_pool = weekends(month_days)
-  eatout_count = if full_month
-                   rand(3..6)
-                 else
-                   [[(6.0 * days_elapsed / days_in_month).round, 1].max, weekend_pool.size].min
-                 end
+  eatout_count = full_month ? rand(3..6) : [[(6.0 * days_elapsed / days_in_month).round, 1].max, weekend_pool.size].min
   eatout_days = weekend_pool.sample(eatout_count).sort
   eatout_amounts = eatout_days.map { rand(900..2_400) }
   eatout_total = eatout_amounts.sum
 
-  # Ensure groceries budget remains feasible
+  # Ensure groceries remain feasible
   grocery_visits = full_month ? rand(4..5) : [[(5.0 * days_elapsed / days_in_month).ceil, 1].max, 5].min
   min_grocery_total = grocery_visits * 1_200
   while (food_target - coffee_total - eatout_total) < min_grocery_total && eatout_days.any?
@@ -211,8 +210,7 @@ months.each_with_index do |range, mi|
   end
 
   # Groceries split to hit target
-  grocery_total = food_target - coffee_total - eatout_total
-  grocery_total = [grocery_total, min_grocery_total].max
+  grocery_total = [food_target - coffee_total - eatout_total, min_grocery_total].max
   grocery_days = month_days.group_by(&:cweek).values.map { |w| w.sample(1) }.flatten
   grocery_days = grocery_days.first(grocery_visits).sort
   grocery_amounts = split_total_random(grocery_total, grocery_days.size, min_per: 1_200)
@@ -230,13 +228,19 @@ months.each_with_index do |range, mi|
   end
   # ------------------- end FOOD --------------------------------------
 
-  # ---- Savings deposits (stay < Food; Laptop follows plan) ----
+  # ---- Savings deposits ----
+  # Emergency Fund: random rounded monthly deposit
+  # Trip to France: follow planned amounts to reach ~25% by today
   deposits_day = [[m_first + rand(2..6), m_last].min] # between 3rd–7th; clamp
   round_choices = [10_000, 15_000, 20_000, 25_000]
 
   piggy_banks.each do |saving|
     date = deposits_day.first
-    amt  = (saving == new_laptop) ? laptop_plan[mi] : round_choices.sample
+    amt  = if saving == trip_fr
+             trip_plan[mi]
+           else
+             round_choices.sample
+           end
     next if amt.to_i <= 0
     add_txn!(user: user, categories: categories, title: "Savings",
              description: "Saving deposit", amount: amt, date: date, saving: saving)
@@ -277,16 +281,13 @@ months.each_with_index do |range, mi|
   end
 
   # -------------------- Income LAST: balance month --------------------
-  # Make salary = this month's expenses + small surplus, so available balance
-  # only grows a little each month.
   month_expense_total = user.transactions
                            .where(date: m_first..m_last, transaction_type: "expense")
                            .sum(:amount)
 
   surplus = if full_month
-              rand(3_000..12_000) # typical surplus per full month
+              rand(3_000..12_000)
             else
-              # smaller surplus early in the month
               rand(1_000..6_000)
             end
 
@@ -345,4 +346,4 @@ Message.create!(
   created_at: now - 5.minutes, updated_at: now - 5.minutes
 )
 
-puts "Done! 🌱 Food fixed at ~¥55k/mo (pro-rated this month), Utilities highest, Food second; salary balances each month with a small surplus so available balance rises slowly from ¥100k."
+puts "Done! 🌱 Food fixed at ~¥55k/mo (pro-rated this month), Utilities highest, Food second; Trip to France seeded to ~25% of goal in round monthly deposits; salary balances each month with a small surplus from ¥100k start."
