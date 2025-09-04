@@ -98,7 +98,7 @@
                 <div><%= transaction.category&.title %></div>
               </div>
               <div class="col-4 text-end">
-                <div>
+                <div class="text-success">
                   <%= number_to_currency(transaction.amount, unit: "¥", precision: 0, delimiter: ",") %>
                 </div>
               </div>
