@@ -81,11 +81,21 @@
   <div class="offcanvas-header">
     <h5 class="offcanvas-title" id="offcanvasLimitLabel">Create a new Category</h5>
   </div>
-  <div class="offcanvas-body small">
-    <%= simple_form_for @category do |f| %>
-      <%= f.input :title %>
-      <%= f.input :limit, as: :integer, step: 1000,  placeholder: "Set your Monthly Budget(Optional)", label: false, input_html: { min: "0" } %>
-      <%= f.submit class:"btn btn-outline-primary" %>
-    <% end %>
+<%= simple_form_for @category do |f| %>
+  <%= f.input :title %>
+
+  <div class="input-group mb-3">
+    <span class="input-group-text">¥</span>
+    <%= f.input :limit,
+          as: :integer,
+          wrapper: false,   # prevents Simple Form from adding its own wrapper div
+          step: 1000,
+          placeholder: "Set your Monthly Budget (Optional)",
+          label: false,
+          input_html: { min: "0", class: "form-control" } %>
+  </div>
+  <%= f.submit class:"btn btn-outline-primary" %>
+<% end %>
+
   </div>
 </div>

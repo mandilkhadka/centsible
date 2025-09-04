@@ -1,13 +1,41 @@
 <%= simple_form_for transaction do |f| %>
   <%= f.input :transaction_type, as: :hidden, input_html: { value: expense ? "expense" : "income" } %>
-  <%= f.input :description, placeholder: "Items", label: false, input_html: { class: "my-4" } %>
-  <%= f.input :amount, as: :integer, step: 1_000,  placeholder: "Price",  label: false, input_html: { min: "0" } %>
-  <% if expense  %>
-    <%= f.association :category, collection: Category.where.not(title: "Income"), prompt: "Select a Category", required: true, label: false, input_html: { class: "my-4" } %>
+
+  <%= f.input :description,
+              placeholder: "Items",
+              label: false,
+              input_html: { class: "my-4" } %>
+
+  <!-- Amount input with ¥ icon -->
+  <div class="form-group my-4">
+    <div class="input-group">
+      <span class="input-group-text">¥</span>
+      <%= f.number_field :amount,
+            min: 1, step: 1, required: true,
+            placeholder: "Price",
+            class: "form-control",
+            aria: { label: "Goal amount in yen" } %>
+    </div>
+  </div>
+
+  <% if expense %>
+    <%= f.association :category,
+          collection: Category.where.not(title: "Income"),
+          prompt: "Select a Category",
+          required: true,
+          label: false,
+          input_html: { class: "form-control my-4" } %>
   <% end %>
-  <%= f.input :date, as: :date, required: true, label: false, input_html: { class: "my-4" } %>
+
+  <%= f.input :date,
+              as: :date,
+              required: true,
+              label: false,
+              input_html: { class: "form-control my-4" } %>
+
   <div class="text-center">
-    <%= f.button :button, class: "btn btn-primary text-white rounded-5" do %>
+    <%= f.button :button,
+          class: "btn btn-primary text-white rounded-5" do %>
       <% if expense %>
         <i class="fa-solid fa-coins me-1"></i> Save Expense
       <% else %>
