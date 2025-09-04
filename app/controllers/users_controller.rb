@@ -1,6 +1,8 @@
 class UsersController < ApplicationController
   include RangeFilterable
+
   def dashboard
+    @user_message = Message.new
     set_range_and_totals
     @transaction = Transaction.new
     @transactions = current_user.transactions.order(created_at: :desc)

@@ -1,7 +1,25 @@
 class SavingsController < ApplicationController
+   include RangeFilterable
   def index
     @savings = current_user.savings.order(created_at: :desc)
     @saving  = Saving.new
+    set_range_and_totals
+
+    @transactions_income = @filtered_transactions
+                            .incomes
+                            .includes(:category)
+                            .order(date: :desc, id: :desc)
+
+    @transactions_expense = @filtered_transactions
+                              .expenses
+                              .non_savings
+                              .includes(:category)
+                              .order(date: :desc, id: :desc)
+
+    @transactions_savings = @filtered_transactions
+                            .savings
+                            .includes(:category, :saving)
+                            .order(date: :desc, id: :desc)
   end
 
   def create
