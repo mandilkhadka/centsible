@@ -32,7 +32,7 @@ export default class extends Controller {
     if (!this.isRecording) {
       this.recognition.start()
       this.isRecording = true
-      this.buttonTarget.innerHTML = 'Listening <i class="fa-solid fa-microphone fa-beat fa-xl" style="color: rgb(160, 187, 138);"></i>'
+      this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone fa-beat fa-xl" style="color: rgba(44, 72, 19, 0.81);"></i>'
       console.log("Recording started")
     } else {
       this.recognition.stop()

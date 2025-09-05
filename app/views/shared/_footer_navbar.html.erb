@@ -4,6 +4,7 @@
       <%= link_to root_path, class: "nav-link d-flex flex-column align-items-center py-2" do %>
         <i class="fa-solid fa-house <%= current_page?(root_path) ? 'green' : '' %>"></i>
         <small>Dashboard</small>
+
       <% end %>
     </div>
 
@@ -20,7 +21,6 @@
         <small>Categories</small>
       <% end %>
     </div>
-
     <div class="nav-item flex-fill">
       <%= link_to messages_path, class: "nav-link d-flex flex-column align-items-center py-2" do %>
         <i class="fa-solid fa-comment-dots <%= current_page?(messages_path) ? 'green' : '' %>"></i>
