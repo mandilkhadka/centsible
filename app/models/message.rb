@@ -54,9 +54,6 @@ class Message < ApplicationRecord
       - Prefer habit tweaks for the other bullets (caps per week, swap, skip, or move a small amount to savings).
       - Close with: “Want details on any of these (e.g., Food or Coffee), or a daily cap breakdown?”
 
-      Fallback (only if you truly lack data):
-      - Ask one short question to proceed (e.g., “Do you want me to use last month’s totals to set a target for Food?”).
-
       ## Transaction Draft Protocol
       If the user asks to create/make/record a transaction (or Salary/File was inferred), follow this STRICT protocol:
 
