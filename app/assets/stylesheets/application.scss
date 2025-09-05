@@ -17,7 +17,6 @@
   margin: 0 auto;
 }
 
-body {
-  padding-top: 56px;   /* match header height */
-  padding-bottom: 60px; /* match footer height */
+body {  /* height of your header navbar */
+  padding-bottom: 100px; /* height of your footer navbar */
 }
