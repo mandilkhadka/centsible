@@ -380,6 +380,61 @@ months.each_with_index do |range, mi|
   end
 end
 
+# -------------------- Seed a 3×3 chat history --------------------
+puts "Creating a short chat history…"
+now = Time.zone.now
+
+# 1) User asks to log a coffee today
+Message.create!(
+  user: user, role: "user",
+  content: "Can you log a coffee I bought at Starbucks today for 540 yen?",
+  created_at: now - 10.minutes, updated_at: now - 10.minutes
+)
+Message.create!(
+  user: user, role: "assistant",
+  content: <<~AI.strip,
+    Sure — I can prepare a draft.
+
+    ```DRAFT_TX
+    {"description":"Starbucks coffee","amount":540,"transaction_type":"expense","date":"#{Date.current}","category_title":"Food"}
+    ```
+    Confirm to save?
+  AI
+  created_at: now - 9.minutes, updated_at: now - 9.minutes
+)
+
+# 2) User asks about last month's Food spend
+Message.create!(
+  user: user, role: "user",
+  content: "How much did I spend on Food last month?",
+  created_at: now - 8.minutes, updated_at: now - 8.minutes
+)
+Message.create!(
+  user: user, role: "assistant",
+  content: "- You target about ¥55,000 for Food per month.\n- Last month should be close to that.\n- Tip: cutting 2 take-outs could save ~¥3,000–¥4,000.",
+  created_at: now - 7.minutes, updated_at: now - 7.minutes
+)
+
+# 3) User requests a Poképark savings deposit draft
+deposit_day = Date.current.change(day: [5, Date.current.day].min) # early month; clamp if today < 5
+Message.create!(
+  user: user, role: "user",
+  content: "Add a savings deposit of 10,000 yen to my Poképark fund for this month.",
+  created_at: now - 6.minutes, updated_at: now - 6.minutes
+)
+Message.create!(
+  user: user, role: "assistant",
+  content: <<~AI.strip,
+    Got it — here’s a draft deposit into your Poképark fund.
+
+    ```DRAFT_TX
+    {"description":"Saving deposit","amount":10000,"transaction_type":"expense","date":"#{deposit_day}","category_title":"Savings"}
+    ```
+    Confirm to save?
+  AI
+  created_at: now - 5.minutes, updated_at: now - 5.minutes
+)
+
 puts "Done! 🌱 Salary ¥350k on the 6th; Food ~¥55k/mo and stays #2 after Utilities; "
-puts "Poképark fund seeded to goal–¥20k; only three piggy banks (Down payment, Poképark, New phone). "
+puts "Poképark fund seeded to goal–¥20k; piggy banks: Down payment, Poképark, New phone. "
 puts "Savings skipped before payday in the current month and starting balance raised to keep you positive."
