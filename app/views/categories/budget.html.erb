@@ -52,7 +52,11 @@
             <div class="offcanvas-body small pt-0 pb-4 px-2">
               <%= form_with model: category, url: update_budget_limit_path(category.id), method: :patch, local: true do |f| %>
                 <div class="input-group mt-2">
-                  <%= f.number_field :limit, placeholder: "Set limit", class: "form-control form-control-sm",  min: 0 %>
+                  <span class="input-group-text">¥</span>
+                  <%= f.number_field :limit,
+                        placeholder: "Set limit",
+                        class: "form-control form-control-sm",
+                        min: 0 %>
                   <button class="btn btn-outline-primary btn-sm" type="submit">Save</button>
                 </div>
               <% end %>
