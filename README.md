@@ -32,7 +32,7 @@ Developed over **2 weeks** by a **team of 4 developers**, Centsible demonstrates
 - **Backend**: Ruby on Rails 7  
 - **Database**: PostgreSQL  
 - **AI Integration**: RubyLLM with Gemini API  
-- **Other**: Mapbox (location features), PWA setup, Heroku deployment  
+- **Other**: PWA setup, Heroku deployment  
 
 ---
 
