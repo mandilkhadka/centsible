@@ -42,7 +42,7 @@ Developed over **2 weeks** by a **team of 4 developers**, Centsible demonstrates
 
 | Dashboard | Chat with Centi | Piggy Banks |
 |-----------|-----------------|-------------|
-| ![Dashboard](screenshots/dashboard.png) | ![Chat](screenshots/chat.png) | ![Savings](screenshots/savings.png) |  
+| ![Dashboard](app/assets/images/app_screenshots/Centsible_dashboard.png) | ![Chat](screenshots/chat.png) | ![Savings](screenshots/savings.png) |  
 
 ---
 
@@ -80,7 +80,7 @@ Centsible was built as the **final project of Le Wagon Tokyo (Batch #2058)**.
 - **Gaëtan Duquesnoy** — Team Lead / Full-Stack Developer  
 - **Monika Chrzan** — Frontend / UI  
 - **Mandil Khadka** — Backend / Database  
-- **Stefan Muhsin** — Bakend / AI integration  
+- **Stefan Muhsin** — Backend / AI integration  
 
 ---
 
