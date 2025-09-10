@@ -42,7 +42,7 @@ Developed over **2 weeks** by a **team of 4 developers**, Centsible demonstrates
 
 | Dashboard | Chat with Centi | Piggy Banks |
 |-----------|-----------------|-------------|
-| ![Dashboard](app/assets/images/app_screenshots/Centsible_dashboard.png) | ![Chat](screenshots/chat.png) | ![Savings](screenshots/savings.png) |  
+| ![Dashboard](app/assets/images/screenshots/Centsible_dashboard.png) | ![Chat](app/assets/images/screenshots/Centsible_chat_with_centsi.png) | ![Savings](app/assets/images/screenshots/Centsible_piggy_banks.png) |  
 
 ---
 
