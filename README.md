@@ -38,8 +38,6 @@ Developed over **2 weeks** by a **team of 4 developers**, Centsible demonstrates
 
 ## 🖼 Screenshots  
 
-> _Replace with your actual app screenshots_  
-
 | Dashboard | Chat with Centi | Piggy Banks |
 |-----------|-----------------|-------------|
 | ![Dashboard](app/assets/images/screenshots/Centsible_dashboard.png) | ![Chat](app/assets/images/screenshots/Centsible_chat_with_centsi.png) | ![Savings](app/assets/images/screenshots/Centsible_piggy_banks.png) |  
