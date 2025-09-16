@@ -77,10 +77,10 @@ Then open http://localhost:3000 🎉
 
 Centsible was built as the **final project of Le Wagon Tokyo (Batch #2058)**.  
 
-- **Gaëtan Duquesnoy** — Team Lead / Full-Stack Developer  
-- **Monika Chrzan** — Frontend / UI  
-- **Mandil Khadka** — Backend / Database  
-- **Stefan Muhsin** — Backend / AI integration  
+- [Gaëtan Duquesnoy](https://github.com/GaetanDuq) — Team Lead / Full-Stack Developer  
+- [Monika Chrzan](https://github.com/Darrrth) — Frontend / UI  
+- [Mandil Khadka](https://github.com/mandilkhadka) — Backend / Database  
+- [Stefan Muhsin](https://github.com/Stefanmuhsin) — Backend / AI integration
 
 ---
 
